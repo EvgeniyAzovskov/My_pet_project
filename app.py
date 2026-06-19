@@ -3,7 +3,6 @@ from checklist_engine import generate_checklist
 
 st.set_page_config(page_title="Чек-лист экспедиции", page_icon="🧳")
 st.title("🧳 Генератор чек-листа для автоэкспедиции")
-st.markdown("### 🚗 8 000 км — это серьезно! Давайте соберем всё правильно.")
 
 col1, col2 = st.columns(2)
 with col1:

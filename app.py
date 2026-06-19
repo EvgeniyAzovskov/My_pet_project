@@ -32,6 +32,17 @@ st.markdown("""
         font-size: 1.2rem;
         margin-bottom: 2rem;
     }
+    /* Убираем полосы над полями ввода */
+    .stTextInput > div > div {
+        border-top: none !important;
+    }
+    .stTextInput > div:before {
+        display: none !important;
+    }
+    /* Убираем шарики */
+    .stBalloon {
+        display: none !important;
+    }
     .search-box {
         background: white;
         padding: 2rem;
@@ -99,6 +110,12 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
+    .budget-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -106,7 +123,7 @@ st.markdown("""
 # ШАПКА
 # ============================================
 st.markdown('<div class="main-title">🚗 TripPlanner</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">📋 Планируйте путешествия с умом — маршрут, топливо, снаряжение</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">📋 Планируйте путешествия с умом — маршрут, топливо, снаряжение, питание</div>', unsafe_allow_html=True)
 
 # ============================================
 # БЛОК ПОИСКА МАРШРУТА
@@ -115,9 +132,9 @@ st.markdown('<div class="search-box">', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([2, 2, 1])
 with col1:
-    start_city = st.text_input("📍 Откуда", value="Москва", placeholder="Город старта")
+    start_city = st.text_input("📍 Откуда", value="Москва", placeholder="Город старта", label_visibility="collapsed")
 with col2:
-    end_city = st.text_input("🏁 Куда", value="Владивосток", placeholder="Город финиша")
+    end_city = st.text_input("🏁 Куда", value="Владивосток", placeholder="Город финиша", label_visibility="collapsed")
 with col3:
     st.markdown("<br>", unsafe_allow_html=True)
     search_clicked = st.button("🚀 Найти маршрут", use_container_width=True)
@@ -150,7 +167,7 @@ if 'route' in st.session_state:
     end_city = st.session_state.get('end_city', 'Владивосток')
     
     # ============================================
-    # НАСТРОЙКИ ПУТЕШЕСТВИЯ (всегда видны)
+    # НАСТРОЙКИ ПУТЕШЕСТВИЯ
     # ============================================
     st.markdown('<div class="section-title">⚙️ Настройки путешествия</div>', unsafe_allow_html=True)
     
@@ -163,6 +180,18 @@ if 'route' in st.session_state:
         camping = st.checkbox("🏕️ Палатка", value=True)
     with col4:
         season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
+    
+    # ===== ОБРАТНЫЙ МАРШРУТ =====
+    st.markdown("---")
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        round_trip = st.checkbox("🔄 Обратный маршрут", value=False, help="Добавить обратную дорогу (туда и обратно)")
+    
+    if round_trip:
+        st.info(f"🔄 Маршрут туда и обратно: {distance * 2:,} км (×2)")
+        total_distance = distance * 2
+    else:
+        total_distance = distance
     
     st.markdown("---")
     
@@ -207,13 +236,36 @@ if 'route' in st.session_state:
     # ============================================
     # РАСЧЕТ ТОПЛИВА
     # ============================================
-    total_liters = (distance / 100) * fuel_consumption
+    total_liters = (total_distance / 100) * fuel_consumption
     total_cost = total_liters * fuel_price
     reserve_factor = 1 + (reserve_percent / 100)
     total_liters_with_reserve = total_liters * reserve_factor
     total_cost_with_reserve = total_cost * reserve_factor
     effective_range = (tank_volume / fuel_consumption) * 100
-    refuels_count = int(distance / effective_range) + 1
+    refuels_count = int(total_distance / effective_range) + 1
+    
+    # ============================================
+    # РАСЧЕТ ПИТАНИЯ
+    # ============================================
+    # Нормы питания на человека в день (в рублях)
+    food_rates = {
+        "wild": {"breakfast": 100, "lunch": 150, "dinner": 150, "snacks": 80},
+        "standard": {"breakfast": 200, "lunch": 300, "dinner": 350, "snacks": 150},"luxury": {"breakfast": 400, "lunch": 600, "dinner": 700, "snacks": 300}
+    }
+    
+    template = "wild" if camping else "standard"
+    rates = food_rates.get(template, food_rates["standard"])
+    
+    food_per_day_per_person = sum(rates.values())
+    total_food_cost = food_per_day_per_person * people * days
+    
+    # Детализация питания
+    food_details = {
+        "Завтрак": rates["breakfast"] * people * days,
+        "Обед": rates["lunch"] * people * days,
+        "Ужин": rates["dinner"] * people * days,
+        "Перекусы": rates["snacks"] * people * days
+    }
     
     # ============================================
     # ОБЗОР ПОЕЗДКИ
@@ -224,7 +276,7 @@ if 'route' in st.session_state:
     with col1:
         st.markdown(f"""
         <div class="metric-card">
-            <div class="value">{distance:,}</div>
+            <div class="value">{total_distance:,}</div>
             <div class="label">📏 Расстояние (км)</div>
         </div>
         """, unsafe_allow_html=True)
@@ -251,13 +303,11 @@ if 'route' in st.session_state:
         """, unsafe_allow_html=True)
     
     # ============================================
-    # КАРТА (folium)
+    # КАРТА
     # ============================================
     st.markdown('<div class="section-title">🗺️ Карта маршрута</div>', unsafe_allow_html=True)
     
     try:
-        # Генерируем карту через folium
-        from map_generator import generate_route_map
         folium_map = generate_route_map(route)
         folium_static(folium_map, width=1200, height=500)
         
@@ -267,7 +317,6 @@ if 'route' in st.session_state:
             st.warning("⚠️ Реальный маршрут не доступен, показана прямая линия")
     except Exception as e:
         st.error(f"Ошибка загрузки карты: {e}")
-        st.info("Попробуйте обновить страницу или проверьте интернет-соединение")
     
     # ============================================
     # ДЕТАЛЬНЫЙ РАСЧЕТ
@@ -292,17 +341,56 @@ if 'route' in st.session_state:
         with col2:
             st.markdown("#### 🗺️ Маршрут")
             route_data = pd.DataFrame({
-                "Показатель": ["Откуда", "Куда", "Расстояние", "Запас хода", "Заправок", "Расход в день"],
+                "Показатель": ["Откуда", "Куда", "Расстояние", "Обратный путь", "Запас хода", "Заправок"],
                 "Значение": [
                     start_city,
                     end_city,
                     f"{distance:,} км",
+                    "✅ Да" if round_trip else "❌ Нет",
                     f"{effective_range:.0f} км",
-                    f"{refuels_count} раз",
-                    f"{total_cost_with_reserve/days:,.0f} ₽"
+                    f"{refuels_count} раз"
                 ]
             })
             st.dataframe(route_data, hide_index=True, use_container_width=True)
+    
+    # ============================================
+    # РАСХОДЫ НА ПИТАНИЕ
+    # ============================================
+    st.markdown('<div class="section-title">🍽️ Расходы на питание</div>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("🍳 Завтрак", f"{food_details['Завтрак']:,.0f} ₽")
+    with col2:
+        st.metric("🍝 Обед", f"{food_details['Обед']:,.0f} ₽")
+    with col3:
+        st.metric("🍲 Ужин", f"{food_details['Ужин']:,.0f} ₽")
+    
+    st.metric("🥜 Перекусы", f"{food_details['Перекусы']:,.0f} ₽")
+    
+    st.info(f"""
+    Детализация:  
+    - {people} чел. × {days} дней = {people * days} человеко-дней  
+    - {food_per_day_per_person:.0f} ₽/чел/день (завтрак + обед + ужин + перекусы)  
+    - Итого на питание: {total_food_cost:,.0f} ₽
+    """)
+    
+    # ============================================
+    # ИТОГОВЫЙ БЮДЖЕТ
+    # ============================================
+    st.markdown('<div class="section-title">💰 Итоговый бюджет путешествия</div>', unsafe_allow_html=True)
+    
+    total_all = total_cost_with_reserve + total_food_cost
+    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
+    with col2:
+        st.metric("🍽️ Питание", f"{total_food_cost:,.0f} ₽")
+    with col3:
+        st.metric("🎒 Снаряжение", "0 ₽", help="Будет добавлено из чек-листа")
+    with col4:
+        st.metric("💰 ИТОГО", f"{total_all:,.0f} ₽", delta=f"~{total_all/days:,.0f} ₽/день")
     
     # ============================================
     # ЧЕК-ЛИСТ
@@ -312,17 +400,16 @@ if 'route' in st.session_state:
     if st.button("🔄 Собрать чек-лист", use_container_width=True):
         user_input = {
             "season": season,
-            "template": "wild",
+            "template": "wild" if camping else "standard",
             "camping": camping,
             "people": people,
             "days": days,
-            "distance": distance
+            "distance": total_distance
         }
         
         checklist = generate_checklist(user_input)
         
         if checklist:
-            st.balloons()
             st.success(f"✅ Готово! {len(checklist)} позиций")
             
             categories = {}
@@ -348,25 +435,29 @@ if 'route' in st.session_state:
                                 st.checkbox(label, key=f"{item['name']}_{hash(label)}")
                 
                 st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
-                total_food = 0
+            
+            # Подсчет стоимости снаряжения из чек-листа
+            total_gear_cost = 0
             for cat, items in categories.items():
                 for item in items:
                     if item.get('price'):
                         price_match = re.search(r'(\d+)', item['price'])
                         if price_match:
-                            total_food += int(price_match.group(1))
+                            total_gear_cost += int(price_match.group(1))
             
-            if total_food > 0:
+            if total_gear_cost > 0:
                 st.markdown("---")
-                st.markdown("## 💰 Итоговый бюджет")
-                col1, col2, col3 = st.columns(3)
+                st.markdown("## 💰 Полный бюджет")
+                col1, col2, col3, col4 = st.columns(4)
                 with col1:
-                    st.metric("🍜 Продукты", f"{total_food:,.0f} ₽")
-                with col2:
                     st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
+                with col2:
+                    st.metric("🍽️ Питание", f"{total_food_cost:,.0f} ₽")
                 with col3:
-                    total_all = total_food + total_cost_with_reserve
-                    st.metric("💰 ИТОГО", f"{total_all:,.0f} ₽", delta=f"~{total_all/days:,.0f} ₽/день")
+                    st.metric("🎒 Снаряжение", f"{total_gear_cost:,.0f} ₽")
+                with col4:
+                    grand_total = total_cost_with_reserve + total_food_cost + total_gear_cost
+                    st.metric("💰 ИТОГО", f"{grand_total:,.0f} ₽", delta=f"~{grand_total/days:,.0f} ₽/день")
         else:
             st.warning("Чек-лист пуст. Проверьте условия")
     

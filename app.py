@@ -25,7 +25,18 @@ with st.sidebar:
     distance = st.number_input("📏 Расстояние (км)", min_value=100, max_value=20000, value=8000, step=100)
     
     st.markdown("---")
+    st.markdown("---")
+    st.subheader("🗺️ Маршрут")
     
+    start_city = st.text_input("Город старта", value="Москва")
+    end_city = st.text_input("Город финиша", value="Владивосток")
+    
+    # Для продвинутого режима
+    with st.expander("📍 Точные координаты (опционально)"):
+        start_lat = st.number_input("Широта старта", value=55.7558, format="%.4f")
+        start_lon = st.number_input("Долгота старта", value=37.6173, format="%.4f")
+        end_lat = st.number_input("Широта финиша", value=43.1154, format="%.4f")
+        end_lon = st.number_input("Долгота финиша", value=131.8854, format="%.4f")
     st.subheader("⛽ Топливо")
     col_fuel1, col_fuel2 = st.columns(2)
     with col_fuel1:
@@ -156,46 +167,55 @@ if st.button("✅ Собрать полный чек-лист!", type="primary")
         st.markdown("---")
         st.markdown("## 🗺️ Карта маршрута с заправками и кемпингами")
         
-        # Координаты маршрута (пока Москва → Владивосток, потом можно сделать ввод)
-        start_lat, start_lon = 55.7558, 37.6173  # Москва
-        end_lat, end_lon = 43.1154, 131.8854     # Владивосток
+        # Определяем координаты
+        # Если пользователь ввел координаты — используем их
+        if 'start_lat' in locals():
+            start_lat_use = start_lat
+            start_lon_use = start_lon
+            end_lat_use = end_lat
+            end_lon_use = end_lon
+        else:
+            # Иначе стандартные
+            start_lat_use, start_lon_use = 55.7558, 37.6173
+            end_lat_use, end_lon_use = 43.1154, 131.8854
         
-        # Создаем карту
-        route_map = generate_route_map(start_lat, start_lon, end_lat, end_lon, distance)
-        
-        # Отображаем карту
-        folium_static(route_map, width=1000, height=600)
-        
-        # Легенда
-        st.caption("""
-        **Легенда:**  
-        🟢 Зеленая линия — маршрут  
-        ⛽ Синий маркер — АЗС  
-        🏕️ Зеленый маркер — кемпинг  
-        🏁 Флаги — старт/финиш
-        """)
-        # Группировка по категориям
-        categories = {}
-        for item in checklist:
-            cat = item['category']
-            if cat not in categories:
-                categories[cat] = []
-            categories[cat].append(item)
-
-        # Отображение с количеством и ценами
-        for cat, items in categories.items():
-            with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
-                for item in items:
-                    label = item['name']
-                    if item.get('amount'):
-                        label += f" → **{item['amount']}**"
-                    if item.get('price'):
-                        label += f" (💰 {item['price']})"
-                    if item.get('note'):
-                        label += f" *({item['note']})*"
-
-                    st.checkbox(label, key=f"{item['name']}_{cat}_{hash(label)}")
-        
+        # Создаем карту с реальным маршрутом
+        with st.spinner('Строим маршрут... Это может занять 10-20 секунд'):
+            try:
+                route_map = generate_route_map(
+                    start_lat_use, 
+                    start_lon_use, 
+                    end_lat_use, 
+                    end_lon_use, 
+                    distance
+                )
+                
+                # Отображаем карту
+                folium_static(route_map, width=1000, height=600)
+                
+                st.caption("""
+                Легенда:  
+                🔵 Синяя линия — реальный маршрут по дорогам  
+                ⛽ Синий маркер — АЗС  
+                🏕️ Зеленый маркер — кемпинг  
+                🏁 Флаги — старт/финиш
+                """)
+                
+            except Exception as e:
+                st.error(f"⚠️ Не удалось построить маршрут: {e}")
+                st.info("Попробуйте использовать приближенный маршрут через города.")
+                
+                # Показываем приближенный маршрут
+                from map_generator import get_approximate_route
+                route_coords = get_approximate_route(
+                    start_lat_use, start_lon_use, 
+                    end_lat_use, end_lon_use
+                )
+                
+                m = folium.Map(location=[55.7558, 37.6173], zoom_start=4)
+                folium.PolyLine(route_coords, color='orange', weight=4, 
+                              popup='Приближенный маршрут').add_to(m)
+                folium_static(m, width=1000, height=600)
         # ========== ИТОГОВАЯ СТОИМОСТЬ ==========
         # Подсчет общей стоимости продуктов
         total_food_price = 0

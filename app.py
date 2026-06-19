@@ -97,7 +97,8 @@ if distance > 0:
         st.metric("💸 Стоимость топлива", f"{total_cost_with_reserve:,.0f} руб")
     with col2:
         st.metric("⛽ Заправок", f"{refuels_count} раз", f"~{effective_range:.0f} км/бак")
-        st.metric("📅 Расход в день", f"{total_cost_with_reserve/days:,.0f} руб")with col3:
+        st.metric("📅 Расход в день", f"{total_cost_with_reserve/days:,.0f} руб")
+        with col3:
         st.metric("🚗 Расход", f"{fuel_consumption:.1f} л/100км")
         st.metric("🛢️ Запас хода", f"~{effective_range:.0f} км")
 

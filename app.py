@@ -32,18 +32,15 @@ st.markdown("""
         font-size: 1.2rem;
         margin-bottom: 2rem;
     }
-    /* Убираем белую полосу над полями ввода */
     .stTextInput > div > div {
         border-top: none !important;
     }
     .stTextInput > div:before {
         display: none !important;
     }
-    /* Убираем шарики */
     .stBalloon {
         display: none !important;
     }
-    /* Скрываем лишние рамки */
     .stTextInput > div {
         border: 1px solid #ddd !important;
         border-radius: 8px !important;
@@ -112,17 +109,18 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
-    .budget-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        border-left: 4px solid #667eea;
-    }
     .food-info {
         background: #f0f4ff;
         padding: 1rem;
         border-radius: 8px;
         border-left: 4px solid #667eea;
+        margin: 0.5rem 0;
+    }
+    .camping-info {
+        background: #e8f5e9;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #4caf50;
         margin: 0.5rem 0;
     }
 </style>
@@ -193,7 +191,7 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
     
     # ===== ОБРАТНЫЙ МАРШРУТ =====
     st.markdown("---")
-    col1, col2 = st.columns([1, 3])
+    col1, col2, col3 = st.columns([1, 1, 2])
     with col1:
         round_trip = st.checkbox("🔄 Обратный маршрут", value=False, help="Добавить обратную дорогу (туда и обратно)")
     
@@ -203,6 +201,46 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
     else:
         total_distance = distance
     
+    # ===== ПРОЖИВАНИЕ В КЕМПИНГЕ =====
+    st.markdown("---")
+    st.markdown("### 🏕️ Проживание в кемпинге")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        camping_price_per_night = st.number_input(
+            "💰 Цена за ночь (₽)",
+            min_value=0,
+            max_value=5000,
+            value=500,
+            step=50,
+            help="Стоимость одной ночи в кемпинге на человека"
+        )
+    with col2:
+        camping_nights = st.number_input(
+            "🌙 Ночей в кемпинге",
+            min_value=0,
+            max_value=days,
+            value=min(days, 14),
+            step=1,
+            help="Сколько ночей планируете в кемпинге"
+        )
+    with col3:
+        if camping and camping_nights > 0:
+            total_camping_cost = people * camping_nights * camping_price_per_night
+            st.metric(
+                "🏕️ Итого кемпинг",
+                f"{total_camping_cost:,.0f} ₽",
+                help=f"{people} чел. × {camping_nights} ночей × {camping_price_per_night} ₽"
+            )
+        else:
+            total_camping_cost = 0
+            st.info("🏨 Проживание в кемпинге не выбрано")
+    
+    # Предупреждение если ночей больше чем дней
+    if camping_nights > days:
+        st.warning(f"⚠️ Ночей в кемпинге ({camping_nights}) не может быть больше дней в пути ({days})")
+    
+    # ===== ТОПЛИВО =====
     st.markdown("---")
     
     col1, col2, col3, col4 = st.columns(4)
@@ -215,12 +253,12 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
             step=0.5
         )
     with col2:
-        fuel_price = st.number_input(
-            "💰 Цена (₽/л)",
+        fuel_price = st.number_input("💰 Цена за литр (₽)",
             min_value=10,
             max_value=150,
-            value=55,
-            step=1
+            value=66,
+            step=1,
+            help="Цена 95-го бензина"
         )
     with col3:
         tank_volume = st.number_input(
@@ -262,7 +300,6 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
         refuels_count = int(total_distance / effective_range) + 1
         
         # ===== РАСЧЕТ ПИТАНИЯ =====
-        # Нормы питания на человека в день (в рублях)
         food_rates = {
             "wild": {"breakfast": 100, "lunch": 150, "dinner": 150, "snacks": 80},
             "standard": {"breakfast": 200, "lunch": 300, "dinner": 350, "snacks": 150},
@@ -352,11 +389,23 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
             st.metric("🍳 Завтрак", f"{food_details['Завтрак']:,.0f} ₽")
         with col2:
             st.metric("🍝 Обед", f"{food_details['Обед']:,.0f} ₽")
-        with col3:st.metric("🍲 Ужин", f"{food_details['Ужин']:,.0f} ₽")
+        with col3:
+            st.metric("🍲 Ужин", f"{food_details['Ужин']:,.0f} ₽")
         with col4:
             st.metric("🥜 Перекусы", f"{food_details['Перекусы']:,.0f} ₽")
         
         st.info(f"💰 Итого на питание: {total_food_cost:,.0f} ₽")
+        
+        # ============================================
+        # ПРОЖИВАНИЕ (детализация)
+        # ============================================
+        if total_camping_cost > 0:
+            st.markdown("---")
+            st.markdown("### 🏕️ Детализация проживания")
+            st.info(f"""
+            🏕️ Кемпинг:  
+            • {people} чел. × {camping_nights} ночей × {camping_price_per_night} ₽ = {total_camping_cost:,.0f} ₽
+            """)
         
         # ============================================
         # ЧЕК-ЛИСТ
@@ -401,8 +450,7 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
                                     st.checkbox(label, key=f"{item['name']}_{hash(label)}")
                     
                     st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
-                
-                # Подсчет стоимости снаряжения
+                    # Подсчет стоимости снаряжения
                 total_gear_cost = 0
                 for cat, items in categories.items():
                     for item in items:
@@ -417,17 +465,33 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
                 st.markdown("---")
                 st.markdown('<div class="section-title">💰 Итоговый бюджет путешествия</div>', unsafe_allow_html=True)
                 
-                grand_total = total_cost_with_reserve + total_food_cost + total_gear_cost
+                grand_total = total_cost_with_reserve + total_food_cost + total_camping_cost + total_gear_cost
                 
-                col1, col2, col3, col4 = st.columns(4)
+                col1, col2, col3, col4, col5 = st.columns(5)
                 with col1:
                     st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
                 with col2:
                     st.metric("🍽️ Питание", f"{total_food_cost:,.0f} ₽")
                 with col3:
-                    st.metric("🎒 Снаряжение", f"{total_gear_cost:,.0f} ₽")
+                    st.metric("🏕️ Кемпинг", f"{total_camping_cost:,.0f} ₽")
                 with col4:
+                    st.metric("🎒 Снаряжение", f"{total_gear_cost:,.0f} ₽")
+                with col5:
                     st.metric("💰 ИТОГО", f"{grand_total:,.0f} ₽", delta=f"~{grand_total/days:,.0f} ₽/день")
+                
+                # Детализация бюджета
+                with st.expander("📋 Детализация бюджета", expanded=False):
+                    budget_data = pd.DataFrame({
+                        "Категория": ["Топливо", "Питание", "Кемпинг", "Снаряжение", "ИТОГО"],
+                        "Сумма (₽)": [
+                            total_cost_with_reserve,
+                            total_food_cost,
+                            total_camping_cost,
+                            total_gear_cost,
+                            grand_total
+                        ]
+                    })
+                    st.dataframe(budget_data, hide_index=True, use_container_width=True)
                 
                 st.caption("📌 Снаряжение рассчитано из чек-листа. Цены примерные.")
             else:

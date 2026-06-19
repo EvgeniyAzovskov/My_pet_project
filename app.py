@@ -63,6 +63,9 @@ st.markdown("""
 st.markdown('<div class="main-title">🚗 TripPlanner</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">📋 Планируйте путешествия как профессионал</div>', unsafe_allow_html=True)
 
+# ============================================
+# БОКОВАЯ ПАНЕЛЬ
+# ============================================
 with st.sidebar:
     st.markdown("### 📍 Шаг 1. Маршрут")
     col1, col2 = st.columns(2)
@@ -107,6 +110,10 @@ with st.sidebar:
     camping = st.checkbox("🏕️ Ночлег в палатке", value=True)
     season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
     template = st.selectbox("🏕️ Тип", ["wild", "standard", "luxury"])
+
+# ============================================
+# ОСНОВНОЙ КОНТЕНТ
+# ============================================
 
 if 'distance' in st.session_state:
     distance = st.session_state['distance']
@@ -207,6 +214,9 @@ if 'route' in st.session_state:
     
     st.markdown("---")
 
+# ============================================
+# ЧЕК-ЛИСТ
+# ============================================
 st.markdown('<div class="section-title">🎒 Чек-лист снаряжения</div>', unsafe_allow_html=True)
 
 if st.button("🔄 Собрать чек-лист", use_container_width=True):
@@ -231,15 +241,15 @@ if st.button("🔄 Собрать чек-лист", use_container_width=True):
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(item)
-        
-        # ==========================================
+            # ==========================================
         # ✅ ФИКС: ЧЕК-ЛИСТ ВНУТРИ ФОРМЫ
         # ==========================================
         with st.form(key="checklist_form"):
             for cat, items in categories.items():
-                with st.expander("📌 {cat} ({len(items)})", expanded=True):for item in items:
-            label = item['name']
-            if item.get('amount'):
+                with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
+                    for item in items:
+                        label = item['name']
+                        if item.get('amount'):
                             label += f" → **{item['amount']}**"
                         if item.get('price'):
                             label += f" (💰 {item['price']})"
@@ -247,7 +257,7 @@ if st.button("🔄 Собрать чек-лист", use_container_width=True):
                             label += f" *({item['note']})*"
                         st.checkbox(label, key=f"{item['name']}_{hash(label)}")
             
-            # Кнопка внутри формы (она не обязательна, но пусть будет)
+            # Кнопка внутри формы
             st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
         
         total_food = 0

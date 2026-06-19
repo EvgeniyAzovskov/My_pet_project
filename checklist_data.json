@@ -307,495 +307,484 @@
 			],
 			"priority": "high"
 		},
-		{
-			"id": "camping_category",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "========== ВСЕ ДЛЯ НОЧЛЕГА ==========",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical"
+	},
+	{
+		"id": "tent",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "ПАЛАТКА (проверить целостность дуг и тента)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "critical"
+	},
+	{
+		"id": "tent_repair",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Ремнабор для палатки (запасные дуги, клей, армированный скотч)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "tent_groundsheet",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Тент/полог от дождя над палаткой",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium"
+	},
+	{
+		"id": "sleeping_bag",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "СПАЛЬНИКИ (по числу человек, с учетом ночных температур)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "critical"
+	},
+	{
+		"id": "sleeping_bag_extra",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Вкладыш в спальник (флисовый) или теплое белье, если холодно",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium"
+	},
+	{
+		"id": "inflatable_mat",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "КОВРИК НАДУВНОЙ (самонадувающийся или с насосом)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "critical"
+	},
+	{
+		"id": "foam_mat",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "КОВРИК ТУРИСТИЧЕСКИЙ (пенка) — под надувной, для защиты от острых камней",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "camp_chair",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Раскладной стул и стол (для комфорта в лагере)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium"
+	},
+	{
+		"id": "headlamp",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "ФОНАРИК НАЛОБНЫЙ (каждому взрослому, с запасными батарейками)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "critical"
+	},
+	{
+		"id": "camp_lamp",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Кемпинговый фонарь/лампа (для освещения лагеря)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "hammer_pegs",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Молоток для колышков и запасные колышки (особенно для ветра)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium"
+	},
+	{
+		"id": "gas_burner",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Горелка/плитка газовая + баллоны (с запасом)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "pot_kit",
+		"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+		"name": "Котелок/сковорода, кружки, миски, ложки (металлические)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "trash_bags",
+		"category": "🗑️ Организация быта",
+		"name": "Мусорные пакеты (несколько штук)",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 500
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "camp_knife",
+		"category": "🗑️ Организация быта",
+		"name": "Туристический нож (многофункциональный)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high"
+	},
+	{
+		"id": "food_category",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "========== ОСНОВНАЯ КОРЗИНА ==========",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "critical"
+	},
+	{
+		"id": "buckwheat",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ГРЕЧКА (в пакетах для варки)",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "critical",
+		"calculation": {
+			"type": "packets",
+			"packets_per_person_per_day": 1,
+			"days": 14,
+			"price_per_packet": 35
 		},
-		{
-			"id": "tent",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "ПАЛАТКА (проверить целостность дуг и тента)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical"
+		"note": "💰 35 руб/пакет"
+	},
+	{
+		"id": "rice",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "РИС (в пакетах для варки)",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "critical",
+		"calculation": {
+			"type": "packets",
+			"packets_per_person_per_day": 1,
+			"days": 14,
+			"price_per_packet": 30
 		},
-		{
-			"id": "tent_repair",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Ремнабор для палатки (запасные дуги, клей, армированный скотч)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
+		"note": "💰 30 руб/пакет"
+	},
+	{
+		"id": "oatmeal",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ОВСЯНКА (быстрого приготовления, в пакетах)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium",
+		"calculation": {
+			"type": "packets",
+			"packets_per_person_per_day": 1,
+			"days": 14,
+			"price_per_packet": 25
 		},
-		{
-			"id": "tent_groundsheet",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Тент/полог от дождя над палаткой",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium"
+		"note": "💰 25 руб/пакет"
+	},
+	{
+		"id": "canned_meat",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ТУШЕНКА (говядина/свинина)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "critical",
+		"calculation": {
+			"type": "cans",
+			"cans_per_person_per_day": 1,
+			"days": 14,
+			"price_per_can": 250
 		},
-		{
-			"id": "sleeping_bag",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "СПАЛЬНИКИ (по числу человек, с учетом ночных температур)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical"
+		"note": "💰 250 руб/банка"
+	},
+	{
+		"id": "canned_fish",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "РЫБНЫЕ КОНСЕРВЫ (сайра/тунец)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium",
+		"calculation": {
+			"type": "cans",
+			"cans_per_person_per_day": 0.5,
+			"days": 14,
+			"price_per_can": 230
 		},
-		{
-			"id": "sleeping_bag_extra",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Вкладыш в спальник (флисовый) или теплое белье, если холодно",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium"
+		"note": "💰 230 руб/банка"
+	},
+	{
+		"id": "tea_bags",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ЧАЙ (пакетированный)",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "pieces",
+			"pieces_per_person_per_day": 4,
+			"days": 14,
+			"price_per_piece": 2
 		},
-		{
-			"id": "inflatable_mat",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "КОВРИК НАДУВНОЙ (самонадувающийся или с насосом)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical"
+		"note": "💰 2 руб/пакетик"
+	},
+	{
+		"id": "sugar",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "САХАР (в герметичной упаковке) — 1 кг",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "medium",
+		"calculation": {
+			"type": "kg",
+			"kg_per_trip": 1,
+			"price_per_kg": 80
 		},
-		{
-			"id": "foam_mat",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "КОВРИК ТУРИСТИЧЕСКИЙ (пенка) — под надувной, для защиты от острых камней",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
+		"note": "💰 80 руб/кг"
+	},
+	{
+		"id": "nuts",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ОРЕХИ (грецкие/миндаль/кешью) — 1 кг",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "kg",
+			"kg_per_trip": 1,
+			"price_per_kg": 500
 		},
-		{
-			"id": "camp_chair",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Раскладной стул и стол (для комфорта в лагере)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium"
+		"note": "💰 500 руб/кг"
+	},
+	{
+		"id": "dried_fruits",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "СУХОФРУКТЫ (курага/изюм/финики) — 1 кг",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "kg",
+			"kg_per_trip": 1,
+			"price_per_kg": 400
 		},
-		{
-			"id": "headlamp",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "ФОНАРИК НАЛОБНЫЙ (каждому взрослому, с запасными батарейками)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical"
+		"note": "💰 400 руб/кг"
+	},
+	{
+		"id": "fresh_fruits",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ФРУКТЫ СВЕЖИЕ (яблоки/апельсины/бананы) — 3 кг",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "kg",
+			"kg_per_trip": 3,
+			"price_per_kg": 150
 		},
-		{
-			"id": "camp_lamp",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Кемпинговый фонарь/лампа (для освещения лагеря)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
+		"note": "💰 150 руб/кг. ⚠️ Брать немного, докупать в городах"
+	},
+	{
+		"id": "condensed_milk",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "СГУЩЕННОЕ МОЛОКО — 4 банки",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "medium",
+		"calculation": {
+			"type": "pieces",
+			"pieces_per_trip": 4,
+			"price_per_piece": 100
 		},
-		{
-			"id": "hammer_pegs",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Молоток для колышков и запасные колышки (особенно для ветра)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium"
+		"note": "💰 100 руб/банка"
+	},
+	{
+		"id": "salt_spices",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "СОЛЬ и минимальный набор специй (перец, лаврушка)",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "set",
+			"price_per_set": 100
 		},
-		{
-			"id": "gas_burner",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Горелка/плитка газовая + баллоны (с запасом)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
+		"note": "💰 100 руб/набор"
+	},
+	{
+		"id": "cooking_oil",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "МАСЛО РАСТИТЕЛЬНОЕ — 1 литр",
+		"conditions": [
+			{
+				"type": "camping",
+				"value": true
+			}
+		],
+		"priority": "high",
+		"calculation": {
+			"type": "pieces",
+			"pieces_per_trip": 1,
+			"price_per_piece": 120
 		},
-		{
-			"id": "pot_kit",
-			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
-			"name": "Котелок/сковорода, кружки, миски, ложки (металлические)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
+		"note": "💰 120 руб/бутылка"
+	},
+	{
+		"id": "bread_crackers",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ХЛЕБЦЫ / ГАЛЕТЫ / СУХАРИ — 3 упаковки",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "medium",
+		"calculation": {
+			"type": "pieces",
+			"pieces_per_trip": 3,
+			"price_per_piece": 80
 		},
-		{
-			"id": "trash_bags",
-			"category": "🗑️ Организация быта",
-			"name": "Мусорные пакеты (несколько штук)",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 500
-				}
-			],
-			"priority": "high"
+		"note": "💰 80 руб/упаковка"
+	},
+	{
+		"id": "water_drinking_extra",
+		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+		"name": "ВОДА ПИТЬЕВАЯ (дополнительно) — 20 литров НА СТАРТЕ!",
+		"conditions": [
+			{
+				"type": "distance",
+				"operator": ">",
+				"value": 1000
+			}
+		],
+		"priority": "critical",
+		"calculation": {
+			"type": "pieces",
+			"pieces_per_trip": 20,
+			"price_per_piece": 15
 		},
-		{
-			"id": "camp_knife",
-			"category": "🗑️ Организация быта",
-			"name": "Туристический нож (многофункциональный)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high"
-		},
-		{
-			"id": "food_category",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "========== ОСНОВНАЯ КОРЗИНА ==========",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "critical"
-		},
-		{
-			"id": "buckwheat",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ГРЕЧКА (в пакетах для варки)",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "critical",
-			"calculation": {
-				"type": "packets",
-				"packets_per_person_per_day": 1,
-				"days": 14,
-				"price_per_packet": 35
-			},
-			"note": "💰 35 руб/пакет"
-		},
-		{
-			"id": "rice",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "РИС (в пакетах для варки)",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "critical",
-			"calculation": {
-				"type": "packets",
-				"packets_per_person_per_day": 1,
-				"days": 14,
-				"price_per_packet": 30
-			},
-			"note": "💰 30 руб/пакет"
-		},
-		{
-			"id": "oatmeal",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ОВСЯНКА (быстрого приготовления, в пакетах)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium",
-			"calculation": {
-				"type": "packets",
-				"packets_per_person_per_day": 1,
-				"days": 14,
-				"price_per_packet": 25
-			},
-			"note": "💰 25 руб/пакет"
-		},
-		{
-			"id": "canned_meat",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ТУШЕНКА (говядина/свинина)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "critical",
-			"calculation": {
-				"type": "cans",
-				"cans_per_person_per_day": 1,
-				"days": 14,
-				"price_per_can": 250
-			},
-			"note": "💰 250 руб/банка"
-		},
-		{
-			"id": "canned_fish",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "РЫБНЫЕ КОНСЕРВЫ (сайра/тунец)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium",
-			"calculation": {
-				"type": "cans",
-				"cans_per_person_per_day": 0.5,
-				"days": 14,
-				"price_per_can": 230
-			},
-			"note": "💰 230 руб/банка"
-		},
-		{
-			"id": "tea_bags",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ЧАЙ (пакетированный)",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "pieces",
-				"pieces_per_person_per_day": 4,
-				"days": 14,
-				"price_per_piece": 2
-			},
-			"note": "💰 2 руб/пакетик"
-		},
-		{
-			"id": "sugar",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "САХАР (в герметичной упаковке) — 1 кг",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "medium",
-			"calculation": {
-				"type": "kg",
-				"kg_per_trip": 1,
-				"price_per_kg": 80
-			},
-			"note": "💰 80 руб/кг"
-		},
-		{
-			"id": "nuts",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ОРЕХИ (грецкие/миндаль/кешью) — 1 кг",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "kg",
-				"kg_per_trip": 1,
-				"price_per_kg": 500
-			},
-			"note": "💰 500 руб/кг"
-		},
-		{
-			"id": "dried_fruits",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "СУХОФРУКТЫ (курага/изюм/финики) — 1 кг",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "kg",
-				"kg_per_trip": 1,
-				"price_per_kg": 400
-			},
-			"note": "💰 400 руб/кг"
-		},
-		{
-			"id": "fresh_fruits",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ФРУКТЫ СВЕЖИЕ (яблоки/апельсины/бананы) — 3 кг",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "kg",
-				"kg_per_trip": 3,
-				"price_per_kg": 150
-			},
-			"note": "💰 150 руб/кг. ⚠️ Брать немного, докупать в городах"
-		},
-		{
-			"id": "condensed_milk",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "СГУЩЕННОЕ МОЛОКО — 4 банки",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "medium",
-			"calculation": {
-				"type": "pieces",
-				"pieces_per_trip": 4,
-				"price_per_piece": 100
-			},
-			"note": "💰 100 руб/банка"
-		},
-		{
-			"id": "salt_spices",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "СОЛЬ и минимальный набор специй (перец, лаврушка)",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "set",
-				"price_per_set": 100
-			},
-			"note": "💰 100 руб/набор"
-		},
-		{
-			"id": "cooking_oil",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "МАСЛО РАСТИТЕЛЬНОЕ — 1 литр",
-			"conditions": [
-				{
-					"type": "camping",
-					"value": true
-				}
-			],
-			"priority": "high",
-			"calculation": {
-				"type": "pieces",
-				"pieces_per_trip": 1,
-				"price_per_piece": 120
-			},
-			"note": "💰 120 руб/бутылка"
-		},
-		{
-			"id": "bread_crackers",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ХЛЕБЦЫ / ГАЛЕТЫ / СУХАРИ — 3 упаковки",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "medium",
-			"calculation": {
-				"type": "pieces",
-				"pieces_per_trip": 3,
-				"price_per_piece": 80
-			},
-			"note": "💰 80 руб/упаковка"
-		},
-		{
-			"id": "water_drinking_extra",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ВОДА ПИТЬЕВАЯ (дополнительно) — 20 литров НА СТАРТЕ!",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "critical",
-			"calculation": {
-				"type": "pieces",
-				"pieces_per_trip": 20,
-				"price_per_piece": 15
-			},
-			"note": "💰 15 руб/литр. ⚠️ Пополнять на каждой заправке!"
-		}
-	]
+		"note": "💰 15 руб/литр. ⚠️ Пополнять на каждой заправке!"
+	}
+]
 }

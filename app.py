@@ -159,3 +159,5 @@ if st.button("✅ Собрать чек-лист", type="primary"):
             with col3:
                 total_all = total_food + total_cost_with_reserve
                 st.metric("💰 ИТОГО", f"{total_all:,.0f} руб", delta=f"~{total_all/days:,.0f} руб/день")
+    else:
+        st.warning("Чек-лист пуст. Проверьте условия.")

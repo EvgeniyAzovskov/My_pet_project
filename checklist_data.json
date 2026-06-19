@@ -504,7 +504,7 @@
 		{
 			"id": "buckwheat",
 			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "ГРЕЧКА (крупа)",
+			"name": "ГРЕЧКА (в пакетах для варки)",
 			"conditions": [
 				{
 					"type": "distance",
@@ -516,7 +516,8 @@
 			"calculation": {
 				"per_person_per_day": 0.14,
 				"days": 14
-			}
+			},
+			"note": "✅ Залить кипятком в пакете, подождать 20 мин — готово!"
 		},
 		{
 			"id": "rice",
@@ -678,6 +679,18 @@
 			"id": "cooking_oil",
 			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
 			"name": "МАСЛО РАСТИТЕЛЬНОЕ — для жарки/каш",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "cooking_oil",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "МАСЛО ОЛИВКОВОЕ — для жарки/салата",
 			"conditions": [
 				{
 					"type": "camping",

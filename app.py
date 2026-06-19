@@ -237,9 +237,9 @@ if st.button("🔄 Собрать чек-лист", use_container_width=True):
         # ==========================================
         with st.form(key="checklist_form"):
             for cat, items in categories.items():
-                with st.expander(f"📌 {cat} ({len(items)})", expanded=True):for item in items:
-                        label = item['name']
-                        if item.get('amount'):
+                with st.expander("📌 {cat} ({len(items)})", expanded=True):for item in items:
+            label = item['name']
+            if item.get('amount'):
                             label += f" → **{item['amount']}**"
                         if item.get('price'):
                             label += f" (💰 {item['price']})"
@@ -260,7 +260,7 @@ if st.button("🔄 Собрать чек-лист", use_container_width=True):
         
         if total_food > 0:
             st.markdown("---")
-            st.markdown("##  Итоговый бюджет")
+            st.markdown("## 💰 Итоговый бюджет")
             col1, col2, col3 = st.columns(3)
             with col1:
                 st.metric("🍜 Продукты", f"{total_food:,.0f} ₽")

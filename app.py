@@ -57,6 +57,14 @@ st.markdown("""
         padding-bottom: 0.5rem;
         border-bottom: 3px solid #667eea;
     }
+    .footer {
+        text-align: center;
+        color: #999;
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,21 +76,8 @@ st.markdown('<div class="sub-title">📋 Планируйте путешеств
 # ============================================
 with st.sidebar:
     st.markdown("### 📍 Шаг 1. Маршрут")
-    col1, col2 = st.columns(2)
-    with col1:
-        start_city = st.text_input("📍 Откуда", value="Москва")
-    with col2:
-        end_city = st.text_input("🏁 Куда", value="Владивосток")
-    
-    if st.button("🔍 Рассчитать маршрут", use_container_width=True):
-        with st.spinner("🔄 Ищем города..."):
-            route = get_route_info(start_city, end_city)
-            if route:
-                st.session_state['route'] = route
-                st.session_state['distance'] = route['distance_km']
-                st.success(f"✅ {route['distance_km']:,} км")
-            else:
-                st.error("❌ Город не найден")
+    start_city = st.text_input("📍 Откуда", value="Москва")
+    end_city = st.text_input("🏁 Куда", value="Владивосток")
     
     st.markdown("---")
     
@@ -112,16 +107,36 @@ with st.sidebar:
     template = st.selectbox("🏕️ Тип", ["wild", "standard", "luxury"])
 
 # ============================================
+# КНОПКА "РАССЧИТАТЬ МАРШРУТ" ВНИЗУ
+# ============================================
+st.markdown("---")
+col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+with col_btn2:
+    if st.button("🚀 Рассчитать маршрут", use_container_width=True, type="primary"):
+        with st.spinner("🔄 Ищем города и строим маршрут..."):
+            route = get_route_info(start_city, end_city)
+            if route:
+                st.session_state['route'] = route
+                st.session_state['distance'] = route['distance_km']
+                st.success(f"✅ Маршрут построен! {route['distance_km']:,} км")
+                st.rerun()
+            else:
+                st.error("❌ Город не найден! Проверьте название")
+                # ============================================
 # ОСНОВНОЙ КОНТЕНТ
 # ============================================
 
 if 'distance' in st.session_state:
     distance = st.session_state['distance']
 else:
-    distance = 8000
+    distance = 0
 
 if 'route' in st.session_state:
     route = st.session_state['route']
+    
+    if distance == 0:
+        distance = route['distance_km']
+        st.session_state['distance'] = distance
     
     total_liters = (distance / 100) * fuel_consumption
     total_cost = total_liters * fuel_price
@@ -185,7 +200,7 @@ if 'route' in st.session_state:
     with col1:
         st.markdown("#### ⛽ Топливо")
         fuel_data = pd.DataFrame({
-            "Показатель": ["Расход", "Всего литров", "С запасом (+10%)", "Цена за литр", "Стоимость", "Стоимость с запасом"],
+            "Показатель": ["Расход", "Всего литров", "С запасом", "Цена за литр", "Стоимость", "Стоимость с запасом"],
             "Значение": [
                 f"{fuel_consumption} л/100км",
                 f"{total_liters:.1f} л",
@@ -219,68 +234,69 @@ if 'route' in st.session_state:
 # ============================================
 st.markdown('<div class="section-title">🎒 Чек-лист снаряжения</div>', unsafe_allow_html=True)
 
-if st.button("🔄 Собрать чек-лист", use_container_width=True):
-    user_input = {
-        "season": season,
-        "template": template,
-        "camping": camping,
-        "people": people,
-        "days": days,
-        "distance": distance
-    }
-    
-    checklist = generate_checklist(user_input)
-    
-    if checklist:
-        st.balloons()
-        st.success(f"✅ Готово! {len(checklist)} позиций")
+if distance > 0:
+    if st.button("🔄 Собрать чек-лист", use_container_width=True):
+        user_input = {
+            "season": season,"template": template,
+            "camping": camping,
+            "people": people,
+            "days": days,
+            "distance": distance
+        }
         
-        categories = {}
-        for item in checklist:
-            cat = item['category']
-            if cat not in categories:
-                categories[cat] = []
-            categories[cat].append(item)
-            # ==========================================
-        # ✅ ФИКС: ЧЕК-ЛИСТ ВНУТРИ ФОРМЫ
-        # ==========================================
-        with st.form(key="checklist_form"):
-            for cat, items in categories.items():
-                with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
-                    for item in items:
-                        label = item['name']
-                        if item.get('amount'):
-                            label += f" → **{item['amount']}**"
-                        if item.get('price'):
-                            label += f" (💰 {item['price']})"
-                        if item.get('note'):
-                            label += f" *({item['note']})*"
-                        st.checkbox(label, key=f"{item['name']}_{hash(label)}")
+        checklist = generate_checklist(user_input)
+        
+        if checklist:
+            st.balloons()
+            st.success(f"✅ Готово! {len(checklist)} позиций")
             
-            # Кнопка внутри формы
-            st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
-        
-        total_food = 0
-        for cat, items in categories.items():
-            for item in items:
-                if item.get('price'):
-                    price_match = re.search(r'(\d+)', item['price'])
-                    if price_match:
-                        total_food += int(price_match.group(1))
-        
-        if total_food > 0:
-            st.markdown("---")
-            st.markdown("## 💰 Итоговый бюджет")
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("🍜 Продукты", f"{total_food:,.0f} ₽")
-            with col2:
-                st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
-            with col3:
-                total_all = total_food + total_cost_with_reserve
-                st.metric("💰 ИТОГО", f"{total_all:,.0f} ₽", delta=f"~{total_all/days:,.0f} ₽/день")
-    else:
-        st.warning("Чек-лист пуст. Проверьте условия")
+            categories = {}
+            for item in checklist:
+                cat = item['category']
+                if cat not in categories:
+                    categories[cat] = []
+                categories[cat].append(item)
+            
+            with st.form(key="checklist_form"):
+                for cat, items in categories.items():
+                    with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
+                        for item in items:
+                            label = item['name']
+                            if item.get('amount'):
+                                label += f" → **{item['amount']}**"
+                            if item.get('price'):
+                                label += f" (💰 {item['price']})"
+                            if item.get('note'):
+                                label += f" *({item['note']})*"
+                            st.checkbox(label, key=f"{item['name']}_{hash(label)}")
+                
+                st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
+            
+            total_food = 0
+            for cat, items in categories.items():
+                for item in items:
+                    if item.get('price'):
+                        price_match = re.search(r'(\d+)', item['price'])
+                        if price_match:
+                            total_food += int(price_match.group(1))
+            
+            if total_food > 0 and 'total_cost_with_reserve' in locals():
+                st.markdown("---")
+                st.markdown("## 💰 Итоговый бюджет")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("🍜 Продукты", f"{total_food:,.0f} ₽")
+                with col2:
+                    st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
+                with col3:
+                    total_all = total_food + total_cost_with_reserve
+                    st.metric("💰 ИТОГО", f"{total_all:,.0f} ₽", delta=f"~{total_all/days:,.0f} ₽/день")
+        else:
+            st.warning("Чек-лист пуст. Проверьте условия")
+else:
+    st.info("👆 Сначала рассчитайте маршрут!")
 
-st.markdown("---")
-st.caption("**TripPlanner** · Планировщик путешествий · v1.0")
+# ============================================
+# ФУТЕР
+# ============================================
+st.markdown('<div class="footer">TripPlanner · Планировщик путешествий · v1.0</div>', unsafe_allow_html=True)

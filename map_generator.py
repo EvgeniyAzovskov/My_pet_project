@@ -4,8 +4,12 @@ from streamlit_folium import folium_static
 import random
 
 def generate_route_map(route_info):
-    """Генерация карты с реальным маршрутом по дорогам"""
+    """
+    Генерация карты с реальным маршрутом по дорогам
+    Принимает словарь route_info от route_calculator
+    """
     
+    # Извлекаем данные из словаря
     start_lat = route_info['start_lat']
     start_lon = route_info['start_lon']
     end_lat = route_info['end_lat']

@@ -1,3 +1,5 @@
+from map_generator import generate_route_map
+from streamlit_folium import folium_static
 import streamlit as st
 from checklist_engine import generate_checklist
 import re
@@ -150,7 +152,28 @@ if st.button("✅ Собрать полный чек-лист!", type="primary")
         
         # ========== ЧЕК-ЛИСТ ==========
         st.success(f"✅ Собрано {len(checklist)} позиций!")
+        # ========== КАРТА МАРШРУТА ==========
+        st.markdown("---")
+        st.markdown("## 🗺️ Карта маршрута с заправками и кемпингами")
         
+        # Координаты маршрута (пока Москва → Владивосток, потом можно сделать ввод)
+        start_lat, start_lon = 55.7558, 37.6173  # Москва
+        end_lat, end_lon = 43.1154, 131.8854     # Владивосток
+        
+        # Создаем карту
+        route_map = generate_route_map(start_lat, start_lon, end_lat, end_lon, distance)
+        
+        # Отображаем карту
+        folium_static(route_map, width=1000, height=600)
+        
+        # Легенда
+        st.caption("""
+        **Легенда:**  
+        🟢 Зеленая линия — маршрут  
+        ⛽ Синий маркер — АЗС  
+        🏕️ Зеленый маркер — кемпинг  
+        🏁 Флаги — старт/финиш
+        """)
         # Группировка по категориям
         categories = {}
         for item in checklist:

@@ -48,19 +48,6 @@
 			"priority": "high"
 		},
 		{
-			"id": "brake_fluid",
-			"category": "🔧 Техническое обслуживание",
-			"name": "Тормозная жидкость (долив)",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 5000
-				}
-			],
-			"priority": "medium"
-		},
-		{
 			"id": "tire_repair",
 			"category": "🔧 Техническое обслуживание",
 			"name": "Ремкомплект для шин (жгуты) или баллончик герметика",
@@ -488,102 +475,327 @@
 			],
 			"priority": "high"
 		},
-		"id": "salt_spices",
-		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-		"name": "СОЛЬ и минимальный набор специй (перец, лаврушка)",
-		"conditions": [
-			{
-				"type": "camping",
-				"value": true
-			}
-		],
-		"priority": "high",
-		"calculation": {
-			"type": "set",
-			"price_per_set": 100
-		},
-		"note": "💰 100 руб/набор"
-	},
-	{
-		"id": "cooking_oil",
-		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-		"name": "МАСЛО РАСТИТЕЛЬНОЕ — 1 литр",
-		"conditions": [
-			{
-				"type": "camping",
-				"value": true
-			}
-		],
-		"priority": "high",
-		"calculation": {
-			"type": "pieces",
-			"pieces_per_trip": 1,
-			"price_per_piece": 120
-		},
-		"note": "💰 120 руб/бутылка"
-	},
-	{
-		"id": "bread_crackers",
-		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-		"name": "ХЛЕБЦЫ / ГАЛЕТЫ / СУХАРИ — 3 упаковки",
-		"conditions": [
-			{
-				"type": "distance",
-				"operator": ">",
-				"value": 1000
-			}
-		],
-		"priority": "medium",
-		"calculation": {
-			"type": "pieces",
-			"pieces_per_trip": 3,
-			"price_per_piece": 80
-		},
-		"note": "💰 80 руб/упаковка"
-	},
-	{
-		"id": "water_drinking_extra",
-		"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-		"name": "ВОДА ПИТЬЕВАЯ (дополнительно) — 20 литров НА СТАРТЕ!",
-		"conditions": [
-			{
-				"type": "distance",
-				"operator": ">",
-				"value": 1000
-			}
-		],
-		"priority": "critical",
-		"calculation": {
-			"type": "pieces",
-			"pieces_per_trip": 20,
-			"price_per_piece": 15
-		},
-		"note": "💰 15 руб/литр. ⚠️ Пополнять на каждой заправке!"
-	}
 		{
-		"id": "trash_bags",
-		"category": "🗑️ Организация быта",
-		"name": "Мусорные пакеты (несколько штук)",
-		"conditions": [
-			{
-				"type": "distance",
-				"operator": ">",
-				"value": 500
-			}
-		],
-		"priority": "high"
-	},
-	{
-		"id": "camp_knife",
-		"category": "🗑️ Организация быта",
-		"name": "Туристический нож (многофункциональный)",
-		"conditions": [
-			{
-				"type": "camping",
-				"value": true
-			}
-		],
-		"priority": "high"
-	}
-]
+			"id": "trash_bags",
+			"category": "🗑️ Организация быта",
+			"name": "Мусорные пакеты (несколько штук)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 500
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "camp_knife",
+			"category": "🗑️ Организация быта",
+			"name": "Туристический нож (многофункциональный)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "food_category",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "========== ОСНОВНАЯ КОРЗИНА ==========",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "buckwheat",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ГРЕЧКА (в пакетах для варки)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"type": "packets",
+				"packets_per_person_per_day": 1,
+				"days": 14,
+				"price_per_packet": 35
+			},
+			"note": "💰 35 руб/пакет"
+		},
+		{
+			"id": "rice",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "РИС (в пакетах для варки)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"type": "packets",
+				"packets_per_person_per_day": 1,
+				"days": 14,
+				"price_per_packet": 30
+			},
+			"note": "💰 30 руб/пакет"
+		},
+		{
+			"id": "oatmeal",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ОВСЯНКА (быстрого приготовления, в пакетах)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"type": "packets",
+				"packets_per_person_per_day": 1,
+				"days": 14,
+				"price_per_packet": 25
+			},
+			"note": "💰 25 руб/пакет"
+		},
+		{
+			"id": "canned_meat",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ТУШЕНКА (говядина/свинина)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"type": "cans",
+				"cans_per_person_per_day": 1,
+				"days": 14,
+				"price_per_can": 120
+			},
+			"note": "💰 120 руб/банка"
+		},
+		{
+			"id": "canned_fish",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "РЫБНЫЕ КОНСЕРВЫ (сайра/тунец)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"type": "cans",
+				"cans_per_person_per_day": 0.5,
+				"days": 14,
+				"price_per_can": 90
+			},
+			"note": "💰 90 руб/банка"
+		},
+		{
+			"id": "tea_bags",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ЧАЙ (пакетированный)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_person_per_day": 4,
+				"days": 14,
+				"price_per_piece": 2
+			},
+			"note": "💰 2 руб/пакетик"
+		},
+		{
+			"id": "sugar",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "САХАР (в герметичной упаковке) — 1 кг",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"type": "kg",
+				"kg_per_trip": 1,
+				"price_per_kg": 80
+			},
+			"note": "💰 80 руб/кг"
+		},
+		{
+			"id": "nuts",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ОРЕХИ (грецкие/миндаль/кешью) — 1 кг",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "kg",
+				"kg_per_trip": 1,
+				"price_per_kg": 500
+			},
+			"note": "💰 500 руб/кг"
+		},
+		{
+			"id": "dried_fruits",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СУХОФРУКТЫ (курага/изюм/финики) — 1 кг",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "kg",
+				"kg_per_trip": 1,
+				"price_per_kg": 400
+			},
+			"note": "💰 400 руб/кг"
+		},
+		{
+			"id": "fresh_fruits",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ФРУКТЫ СВЕЖИЕ (яблоки/апельсины/бананы) — 3 кг",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "kg",
+				"kg_per_trip": 3,
+				"price_per_kg": 150
+			},
+			"note": "💰 150 руб/кг. ⚠️ Брать немного, докупать в городах"
+		},
+		{
+			"id": "condensed_milk",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СГУЩЕННОЕ МОЛОКО — 4 банки",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_trip": 4,
+				"price_per_piece": 100
+			},
+			"note": "💰 100 руб/банка"
+		},
+		{
+			"id": "salt_spices",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СОЛЬ и минимальный набор специй (перец, лаврушка)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "set",
+				"price_per_set": 100
+			},
+			"note": "💰 100 руб/набор"
+		},
+		{
+			"id": "cooking_oil",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "МАСЛО РАСТИТЕЛЬНОЕ — 1 литр",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_trip": 1,
+				"price_per_piece": 120
+			},
+			"note": "💰 120 руб/бутылка"
+		},
+		{
+			"id": "bread_crackers",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ХЛЕБЦЫ / ГАЛЕТЫ / СУХАРИ — 3 упаковки",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_trip": 3,
+				"price_per_piece": 80
+			},
+			"note": "💰 80 руб/упаковка"
+		},
+		{
+			"id": "water_drinking_extra",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ВОДА ПИТЬЕВАЯ (дополнительно) — 20 литров НА СТАРТЕ!",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_trip": 20,
+				"price_per_piece": 15
+			},
+			"note": "💰 15 руб/литр. ⚠️ Пополнять на каждой заправке!"
+		}
+	]
 }

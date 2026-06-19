@@ -1,5 +1,4 @@
 streamlit
 folium
 streamlit-folium
-osnmx
-networkx
+requests

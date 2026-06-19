@@ -1,80 +1,109 @@
 import streamlit as st
-from checklist_engine import generate_checklist
+from route_calculator import get_route_info
 from map_generator import generate_route_map
 from streamlit_folium import folium_static
+from checklist_engine import generate_checklist
 import re
 
-st.set_page_config(page_title="Чек-лист экспедиции", page_icon="🧳")
-st.title("🧳 Генератор чек-листа для автоэкспедиции")
-st.markdown("### 🚗 Планируйте путешествие с умом!")
+st.set_page_config(page_title="Trip Checklist", page_icon="🧳")
+st.title("🧳 Планировщик путешествий")
 
 # ============================================
-# БОКОВАЯ ПАНЕЛЬ НАСТРОЕК (слева)
+# БОКОВАЯ ПАНЕЛЬ
 # ============================================
 with st.sidebar:
     st.header("⚙️ Настройки")
     
-    st.subheader("📋 Основные параметры")
-    season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
-    template = st.selectbox("🏕️ Тип поездки", ["wild", "standard", "luxury"])
-    camping = st.checkbox("🏕️ Планирую ночевать в палатке (кемпинг)")
-    
-    st.subheader("👥 Количество")
-    people = st.number_input("👥 Человек", min_value=1, max_value=6, value=2, step=1)
-    days = st.number_input("📅 Дней в пути", min_value=1, max_value=60, value=14, step=1)
-    distance = st.number_input("📏 Расстояние (км)", min_value=100, max_value=20000, value=8000, step=100)
-    
-    st.markdown("---")
-    
-    st.subheader("⛽ Топливо")
-    col_fuel1, col_fuel2 = st.columns(2)
-    with col_fuel1:
-        fuel_consumption = st.number_input(
-            "Расход (л/100км)",
-            min_value=1.0,
-            max_value=30.0,
-            value=10.0,
-            step=0.5
-        )
-        tank_volume = st.number_input(
-            "Объем бака (л)",
-            min_value=20,
-            max_value=200,
-            value=60,
-            step=5
-        )
-    with col_fuel2:
-        fuel_price = st.number_input(
-            "Цена за литр (руб)",
-            min_value=10,
-            max_value=150,
-            value=55,
-            step=1
-        )
-        reserve_percent = st.slider(
-            "Запас топлива (%)",
-            min_value=5,
-            max_value=30,
-            value=10,
-            step=5
-        )
-    
-    st.markdown("---")
+    # ===== МАРШРУТ =====
     st.subheader("🗺️ Маршрут")
     start_city = st.text_input("Город старта", value="Москва")
     end_city = st.text_input("Город финиша", value="Владивосток")
     
-    with st.expander("📍 Точные координаты (опционально)"):
-        start_lat = st.number_input("Широта старта", value=55.7558, format="%.4f")
-        start_lon = st.number_input("Долгота старта", value=37.6173, format="%.4f")
-        end_lat = st.number_input("Широта финиша", value=43.1154, format="%.4f")
-        end_lon = st.number_input("Долгота финиша", value=131.8854, format="%.4f")
+    # Кнопка расчета маршрута
+    if st.button("🚀 Рассчитать маршрут", type="primary"):
+        with st.spinner("Ищем города..."):
+            route = get_route_info(start_city, end_city)
+            if route:
+                st.session_state['route'] = route
+                st.session_state['distance'] = route['distance_km']
+                st.success(f"✅ Расстояние: {route['distance_km']} км")
+            else:
+                st.error("❌ Город не найден!")
+    
+    # ===== ОСНОВНЫЕ ПАРАМЕТРЫ =====
+    st.markdown("---")
+    st.subheader("👥 Путешественники")
+    people = st.number_input("👥 Человек", min_value=1, max_value=6, value=2, step=1)
+    days = st.number_input("📅 Дней", min_value=1, max_value=60, value=14, step=1)
+    
+    # Расстояние (автоматически или вручную)
+    if 'distance' in st.session_state:
+        distance = st.session_state['distance']
+        st.info(f"📏 Расстояние: {distance} км (из маршрута)")
+    else:
+        distance = st.number_input("📏 Расстояние (км)", min_value=100, max_value=20000, value=8000, step=100)
+    
+    # ===== ТОПЛИВО =====
+    st.markdown("---")
+    st.subheader("⛽ Топливо")
+    fuel_consumption = st.number_input("Расход (л/100км)", min_value=1.0, max_value=30.0, value=10.0, step=0.5)
+    fuel_price = st.number_input("Цена за литр (руб)", min_value=10, max_value=150, value=55, step=1)
+    tank_volume = st.number_input("Объем бака (л)", min_value=20, max_value=200, value=60, step=5)
+    reserve_percent = st.slider("Запас топлива (%)", min_value=5, max_value=30, value=10, step=5)
+    
+    # ===== КЕМПИНГ =====
+    st.markdown("---")
+    camping = st.checkbox("🏕️ Ночлег в палатке", value=True)
+    season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
+    template = st.selectbox("🏕️ Тип", ["wild", "standard", "luxury"])
 
 # ============================================
-# ОСНОВНАЯ ЧАСТЬ
+# ОСНОВНОЙ ЭКРАН
 # ============================================
 
-if st.button("✅ Собрать полный чек-лист!", type="primary"):
+# Если маршрут рассчитан - показываем карту
+if 'route' in st.session_state:
+    route = st.session_state['route']
+    
+    # ===== КАРТА =====
+    st.markdown("## 🗺️ Карта маршрута")
+    try:
+        route_map = generate_route_map(
+            route['start_lat'], route['start_lon'],
+            route['end_lat'], route['end_lon'],
+            route['distance_km']
+        )
+        folium_static(route_map, width=1000, height=500)
+    except Exception as e:
+        st.error(f"Ошибка карты: {e}")
+
+# ===== РАСЧЕТ ТОПЛИВА (автоматически) =====
+if distance > 0:
+    st.markdown("---")
+    st.markdown("## ⛽ Расчет топлива")
+    
+    total_liters = (distance / 100) * fuel_consumption
+    total_cost = total_liters * fuel_price
+    reserve_factor = 1 + (reserve_percent / 100)
+    total_liters_with_reserve = total_liters * reserve_factor
+    total_cost_with_reserve = total_cost * reserve_factor
+    effective_range = (tank_volume / fuel_consumption) * 100
+    refuels_count = distance / effective_range
+    refuels_count = int(refuels_count) + (1 if refuels_count % 1 > 0 else 0)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("📊 Всего литров", f"{total_liters_with_reserve:.1f} л")
+        st.metric("💸 Стоимость топлива", f"{total_cost_with_reserve:,.0f} руб")
+    with col2:
+        st.metric("⛽ Заправок", f"{refuels_count} раз", f"~{effective_range:.0f} км/бак")
+        st.metric("📅 Расход в день", f"{total_cost_with_reserve/days:,.0f} руб")with col3:
+        st.metric("🚗 Расход", f"{fuel_consumption:.1f} л/100км")
+        st.metric("🛢️ Запас хода", f"~{effective_range:.0f} км")
+
+# ===== КНОПКА ГЕНЕРАЦИИ ЧЕК-ЛИСТА =====
+st.markdown("---")
+if st.button("✅ Собрать чек-лист", type="primary"):
     user_input = {
         "season": season,
         "template": template,
@@ -83,64 +112,21 @@ if st.button("✅ Собрать полный чек-лист!", type="primary")
         "days": days,
         "distance": distance
     }
-
+    
     checklist = generate_checklist(user_input)
-
-    if not checklist:
-        st.warning("Ничего не найдено. Проверьте условия.")
-    else:
-        # ========== РАСЧЕТ БЕНЗИНА ==========
-        st.markdown("---")
-        st.markdown("## ⛽ Расчет топлива")
+    
+    if checklist:
+        st.success(f"✅ {len(checklist)} позиций")
         
-        total_liters = (distance / 100) * fuel_consumption
-        total_cost = total_liters * fuel_price
-        reserve_factor = 1 + (reserve_percent / 100)
-        total_liters_with_reserve = total_liters * reserve_factor
-        total_cost_with_reserve = total_cost * reserve_factor
-        effective_range = (tank_volume / fuel_consumption) * 100
-        refuels_count = distance / effective_range
-        refuels_count = int(refuels_count) + (1 if refuels_count % 1 > 0 else 0)
-        cost_per_day = total_cost_with_reserve / days
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("📊 Всего литров", f"{total_liters_with_reserve:.1f} л", f"+{reserve_percent}% запас")
-            st.metric("💸 Общая стоимость", f"{total_cost_with_reserve:,.0f} руб")
-        with col2:
-            st.metric("⛽ Количество заправок", f"{refuels_count} раз", f"~{effective_range:.0f} км на баке")
-            st.metric("📅 Расход в день", f"{cost_per_day:,.0f} руб/день")
-        with col3:
-            st.metric("🚗 Расход на 100 км", f"{fuel_consumption:.1f} л")
-            st.metric("🛢️ Запас хода", f"~{effective_range:.0f} км")
-        
-        with st.expander("📋 Детальный расчет топлива", expanded=False):
-            st.write(f"**Расстояние:** {distance} км")
-            st.write(f"**Расход:** {fuel_consumption} л/100км")
-            st.write(f"**Цена топлива:** {fuel_price} руб/л")
-            st.write(f"**Объем бака:** {tank_volume} л")
-            st.write(f"**Запас:** {reserve_percent}%")
-            st.write("---")
-            st.write(f"**Чистое топливо:** {total_liters:.1f} л")
-            st.write(f"**Топливо с запасом:** {total_liters_with_reserve:.1f} л")
-            st.write(f"**Чистая стоимость:** {total_cost:,.0f} руб")
-            st.write(f"**Стоимость с запасом:** {total_cost_with_reserve:,.0f} руб")
-            st.write(f"**Заправок (с учетом бака):** {refuels_count} раз")
-        
-        st.markdown("---")
-        
-        # ========== ЧЕК-ЛИСТ ==========
-        st.success(f"✅ Собрано {len(checklist)} позиций!")
-        
-        # Группировка по категориям
+        # Группировка
         categories = {}
         for item in checklist:
             cat = item['category']
             if cat not in categories:
                 categories[cat] = []
             categories[cat].append(item)
-
-        # Отображение с количеством и ценами
+        
+        # Показываем чек-лист
         for cat, items in categories.items():
             with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
                 for item in items:
@@ -151,51 +137,25 @@ if st.button("✅ Собрать полный чек-лист!", type="primary")
                         label += f" (💰 {item['price']})"
                     if item.get('note'):
                         label += f" *({item['note']})*"
-                    st.checkbox(label, key=f"{item['name']}_{cat}_{hash(label)}")
+                    st.checkbox(label, key=f"{item['name']}_{hash(label)}")
         
-        # ========== ИТОГОВАЯ СТОИМОСТЬ ==========
-        total_food_price = 0
+        # ИТОГО
+        total_food = 0
         for cat, items in categories.items():
             for item in items:
                 if item.get('price'):
                     price_match = re.search(r'(\d+)', item['price'])
                     if price_match:
-                        total_food_price += int(price_match.group(1))
+                        total_food += int(price_match.group(1))
         
-        if total_food_price > 0:
+        if total_food > 0:
             st.markdown("---")
             st.markdown("## 💰 Общий бюджет")
-            col_total1, col_total2, col_total3 = st.columns(3)
-            with col_total1:
-                st.metric("🍜 Продукты", f"{total_food_price:,.0f} руб")
-            with col_total2:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("🍜 Продукты", f"{total_food:,.0f} руб")
+            with col2:
                 st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} руб")
-            with col_total3:
-                total_all = total_food_price + total_cost_with_reserve
+            with col3:
+                total_all = total_food + total_cost_with_reserve
                 st.metric("💰 ИТОГО", f"{total_all:,.0f} руб", delta=f"~{total_all/days:,.0f} руб/день")
-        
-        # ========== КАРТА МАРШРУТА ==========
-        st.markdown("---")
-        st.markdown("## 🗺️ Карта маршрута")
-        
-        try:
-            # Используем координаты из настроек
-            route_map = generate_route_map(start_lat, start_lon, end_lat, end_lon, distance)
-            folium_static(route_map, width=1000, height=600)
-            
-            st.caption("""
-            Легенда:  
-            🔵 Синяя линия — маршрут по дорогам  
-            ⛽ Синий маркер — АЗС  
-            🏕️ Зеленый маркер — кемпинг  
-            🏁 Флаги — старт/финиш
-            """)
-        except Exception as e:
-            st.error(f"⚠️ Ошибка карты: {e}")
-            st.info("Показываем упрощенную карту...")
-            
-            import folium
-            m = folium.Map(location=[55.7558, 37.6173], zoom_start=4)
-            folium.Marker([55.7558, 37.6173], popup="Москва").add_to(m)
-            folium.Marker([43.1154, 131.8854], popup="Владивосток").add_to(m)
-            folium_static(m, width=1000, height=600)

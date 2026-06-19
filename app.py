@@ -185,10 +185,11 @@ if 'route' in st.session_state and st.session_state.get('route_calculated', Fals
     with col2:
         days = st.number_input("📅 Дней", min_value=1, max_value=90, value=14, step=1)
     with col3:
-        camping = st.checkbox("🏕️ Палатка", value=True)
-    with col4:
         season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
+    with col4:
+        camping = st.checkbox("🏕️ Палатка", value=True)
     
+
     # ===== ОБРАТНЫЙ МАРШРУТ =====
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 1, 2])

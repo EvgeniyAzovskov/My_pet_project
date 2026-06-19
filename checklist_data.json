@@ -489,19 +489,6 @@
 			"priority": "high"
 		},
 		{
-			"id": "food_category",
-			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "========== ОСНОВНАЯ КОРЗИНА ==========",
-			"conditions": [
-				{
-					"type": "distance",
-					"operator": ">",
-					"value": 1000
-				}
-			],
-			"priority": "critical"
-		},
-		{
 			"id": "buckwheat",
 			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
 			"name": "ГРЕЧКА (в пакетах для варки)",
@@ -517,7 +504,7 @@
 				"packets_per_person_per_day": 1,
 				"days": 14
 			},
-			"note": "✅ Залить кипятком в пакете, подождать 7 мин"
+			"note": "✅ Залить кипятком в пакете, подождать 20 мин"
 		},
 		{
 			"id": "rice",
@@ -535,7 +522,7 @@
 				"packets_per_person_per_day": 1,
 				"days": 14
 			},
-			"note": "✅ Залить кипятком в пакете, подождать 7 мин"
+			"note": "✅ Залить кипятком в пакете, подождать 20 мин"
 		},
 		{
 			"id": "oatmeal",
@@ -552,7 +539,7 @@
 				"packets_per_person_per_day": 1,
 				"days": 14
 			},
-			"note": "✅ Залить кипятком, подождать 3-5 мин"
+			"note": "✅ Залить кипятком, подождать 20 мин"
 		},
 		{
 			"id": "canned_meat",
@@ -742,7 +729,12 @@
 				}
 			],
 			"priority": "critical",
-			"note": "⚠️ Пополнять на каждой заправке!"
+			"calculation": {
+				"type": "pieces",
+				"pieces_per_trip": 20,
+				"price_per_piece": 10
+			},
+			"note": "⚠️ Пополнять в населенных пунктах или в родниках!"
 		},
 		{
 			"id": "trash_bags",

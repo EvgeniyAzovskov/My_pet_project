@@ -1,0 +1,742 @@
+{
+	"items": [
+		{
+			"id": "docs_pack",
+			"category": "📜 Документы и Право",
+			"name": "ПТС, СТС, страховка ОСАГО/Зеленая карта",
+			"conditions": [],
+			"priority": "critical"
+		},
+		{
+			"id": "passport_rf",
+			"category": "📜 Документы и Право",
+			"name": "Паспорт РФ (и копия в бардачке)",
+			"conditions": [],
+			"priority": "critical"
+		},
+		{
+			"id": "driver_license",
+			"category": "📜 Документы и Право",
+			"name": "Водительское удостоверение",
+			"conditions": [],
+			"priority": "critical"
+		},
+		{
+			"id": "oil_can",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Канистра моторного масла (1л) для долива",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 3000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "antifreeze",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Антифриз/Тосол (долив)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 3000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "brake_fluid",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Тормозная жидкость (долив)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 5000
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "tire_repair",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Ремкомплект для шин (жгуты) или баллончик герметика",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 4000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "compressor",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Автомобильный насос/компрессор (проверить работу!)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 2000
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "tow_rope",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Буксировочный трос (динамический)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 3000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "jack_upgrade",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Домкрат (проверить, подходит ли под пороги)",
+			"conditions": [],
+			"priority": "high"
+		},
+		{
+			"id": "wiper_fluid",
+			"category": "🔧 Техническое обслуживание",
+			"name": "Стеклоомыватель (летний, 2 флакона) + скребок от мошек",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "sun_protect",
+			"category": "☀️ Защита от солнца и климата",
+			"name": "Солнцезащитный крем (SPF 50) и гигиеническая помада",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "sun_glasses",
+			"category": "☀️ Защита от солнца и климата",
+			"name": "Солнцезащитные очки (водителю и пассажирам)",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "car_shield",
+			"category": "☀️ Защита от солнца и климата",
+			"name": "Автомобильный отражатель/экран на лобовое стекло",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "low"
+		},
+		{
+			"id": "water_20l",
+			"category": "💧 Вода и Гигиена",
+			"name": "Питьевая вода в канистрах (минимум 10 литров на старте)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "wet_wipes",
+			"category": "💧 Вода и Гигиена",
+			"name": "Влажные салфетки (большая упаковка) и бумажные полотенца",
+			"conditions": [],
+			"priority": "high"
+		},
+		{
+			"id": "dry_shower",
+			"category": "💧 Вода и Гигиена",
+			"name": "Сухой душ / антибактериальные гели для рук",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "toilet_paper",
+			"category": "💧 Вода и Гигиена",
+			"name": "Туалетная бумага (запасной рулон)",
+			"conditions": [],
+			"priority": "high"
+		},
+		{
+			"id": "travel_pillow",
+			"category": "🛌 Сон и комфорт в дороге",
+			"name": "Подушка под шею (для пассажиров)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 2000
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "insect_repellent",
+			"category": "🦟 Защита от насекомых",
+			"name": "Спрей от комаров и мошек (фумигатор в машину)",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "tick_repellent",
+			"category": "🦟 Защита от насекомых",
+			"name": "Средство от клещей (для одежды и кожи)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "first_aid_kit",
+			"category": "💊 Аптечка расширенная",
+			"name": "Аптечка (обезбол, сорбенты, пластыри, бинты, йод, ножницы)",
+			"conditions": [],
+			"priority": "critical"
+		},
+		{
+			"id": "motion_sickness",
+			"category": "💊 Аптечка расширенная",
+			"name": "Средство от укачивания (для пассажиров)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "powerbank_car",
+			"category": "🔌 Электрика и связь",
+			"name": "Пауэрбанк (емкий, на 20000 mAh) + автомобильное зарядное устройство",
+			"conditions": [],
+			"priority": "critical"
+		},
+		{
+			"id": "powerbank_extra",
+			"category": "🔌 Электрика и связь",
+			"name": "Запасной пауэрбанк или солнечная панель (для кемпинга)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "cigarette_splitter",
+			"category": "🔌 Электрика и связь",
+			"name": "Тройник в прикуриватель (на 2-3 гнезда)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "cash_small",
+			"category": "💰 Финансы",
+			"name": "Наличие мелких купюр (по 100-500 руб) для оплаты на трассе",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "snacks",
+			"category": "🍫 Еда и перекусы",
+			"name": "Снэки-батончики, орехи, сухофрукты (не тающие)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 500
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "cooler_bag",
+			"category": "🍫 Еда и перекусы",
+			"name": "Сумка-холодильник (термосумка) с аккумуляторами холода",
+			"conditions": [
+				{
+					"type": "season",
+					"value": "summer"
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "camping_category",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "========== ВСЕ ДЛЯ НОЧЛЕГА ==========",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "tent",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "ПАЛАТКА (проверить целостность дуг и тента)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "tent_repair",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Ремнабор для палатки (запасные дуги, клей, армированный скотч)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "tent_groundsheet",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Тент/полог от дождя над палаткой",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "sleeping_bag",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "СПАЛЬНИКИ (по числу человек, с учетом ночных температур)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "sleeping_bag_extra",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Вкладыш в спальник (флисовый) или теплое белье, если холодно",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "inflatable_mat",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "КОВРИК НАДУВНОЙ (самонадувающийся или с насосом)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "foam_mat",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "КОВРИК ТУРИСТИЧЕСКИЙ (пенка) — под надувной, для защиты от острых камней",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "camp_chair",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Раскладной стул и стол (для комфорта в лагере)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "headlamp",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "ФОНАРИК НАЛОБНЫЙ (каждому взрослому, с запасными батарейками)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "camp_lamp",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Кемпинговый фонарь/лампа (для освещения лагеря)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "hammer_pegs",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Молоток для колышков и запасные колышки (особенно для ветра)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "gas_burner",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Горелка/плитка газовая + баллоны (с запасом)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "pot_kit",
+			"category": "⛺ ЛАГЕРНОЕ СНАРЯЖЕНИЕ (Кемпинг)",
+			"name": "Котелок/сковорода, кружки, миски, ложки (металлические)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "food_category",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "========== ОСНОВНАЯ КОРЗИНА ==========",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical"
+		},
+		{
+			"id": "buckwheat",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ГРЕЧКА (крупа)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"per_person_per_day": 0.14,
+				"days": 14
+			}
+		},
+		{
+			"id": "rice",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "РИС (крупа)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"per_person_per_day": 0.14,
+				"days": 14
+			}
+		},
+		{
+			"id": "canned_meat",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ТУШЕНКА (говядина/свинина)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "critical",
+			"calculation": {
+				"cans_per_day_for_2": 1,
+				"days": 14
+			}
+		},
+		{
+			"id": "canned_fish",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "Рыбные консервы (сайра/тунец) — для разнообразия",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"cans_per_day_for_2": 0.5,
+				"days": 14
+			}
+		},
+		{
+			"id": "tea_bags",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ЧАЙ (пакетированный)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"calculation": {
+				"per_person_per_day": 0.005,
+				"days": 14,
+				"unit": "пакетиков"
+			}
+		},
+		{
+			"id": "sugar",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "САХАР (в герметичной упаковке)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "nuts",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ОРЕХИ (грецкие/миндаль/кешью) — энергетический перекус",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "dried_fruits",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СУХОФРУКТЫ (курага/изюм/финики) — витамины и энергия",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "fresh_fruits",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ФРУКТЫ СВЕЖИЕ (яблоки/апельсины/бананы)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "high",
+			"note": "⚠️ Брать немного — они быстро портятся. Докупать в городах по маршруту."
+		},
+		{
+			"id": "oatmeal",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ОВСЯНЫЕ ХЛОПЬЯ (быстрого приготовления) — завтраки",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "condensed_milk",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СГУЩЕННОЕ МОЛОКО — в чай/кашу",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "salt_spices",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "СОЛЬ и минимальный набор специй (перец, лаврушка)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "cooking_oil",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "МАСЛО РАСТИТЕЛЬНОЕ — для жарки/каш",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "bread_crackers",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ХЛЕБЦЫ / ГАЛЕТЫ / СУХАРИ — вместо хлеба",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "medium"
+		},
+		{
+			"id": "water_drinking_extra",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ВОДА ПИТЬЕВАЯ (дополнительно) — 20 литров НА СТАРТЕ!",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 1000
+				}
+			],
+			"priority": "critical",
+			"note": "⚠️ Пополнять на каждой заправке!"
+		},
+		{
+			"id": "trash_bags",
+			"category": "🗑️ Организация быта",
+			"name": "Мусорные пакеты (несколько штук)",
+			"conditions": [
+				{
+					"type": "distance",
+					"operator": ">",
+					"value": 500
+				}
+			],
+			"priority": "high"
+		},
+		{
+			"id": "camp_knife",
+			"category": "🗑️ Организация быта",
+			"name": "Туристический нож (многофункциональный)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "high"
+		}
+	]
+}

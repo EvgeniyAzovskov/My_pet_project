@@ -108,8 +108,7 @@ if st.button("✅ Собрать полный чек-лист!", type="primary")
             st.metric("📊 Всего литров", f"{total_liters_with_reserve:.1f} л", f"+{reserve_percent}% запас")
             st.metric("💸 Общая стоимость", f"{total_cost_with_reserve:,.0f} руб")
         with col2:
-            st.metric("⛽ Количество заправок", f"{refuels_count} раз", f"~{effective_range:.
-                                                                           0f} км на баке")
+            st.metric("⛽ Количество заправок", f"{refuels_count} раз", f"~{effective_range:.0f} км на баке")
             st.metric("📅 Расход в день", f"{cost_per_day:,.0f} руб/день")
         with col3:
             st.metric("🚗 Расход на 100 км", f"{fuel_consumption:.1f} л")

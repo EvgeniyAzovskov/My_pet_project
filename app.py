@@ -92,12 +92,6 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
-    .settings-collapse {
-        background: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -108,7 +102,7 @@ st.markdown('<div class="main-title">🚗 TripPlanner</div>', unsafe_allow_html=
 st.markdown('<div class="sub-title">📋 Планируйте путешествия с умом — маршрут, топливо, снаряжение</div>', unsafe_allow_html=True)
 
 # ============================================
-# БЛОК ПОИСКА МАРШРУТА (как на Aviasales)
+# БЛОК ПОИСКА МАРШРУТА
 # ============================================
 st.markdown('<div class="search-box">', unsafe_allow_html=True)
 
@@ -118,7 +112,7 @@ with col1:
 with col2:
     end_city = st.text_input("🏁 Куда", value="Владивосток", placeholder="Город финиша")
 with col3:
-    st.markdown("<br>", unsafe_allow_html=True)  # Отступ для выравнивания
+    st.markdown("<br>", unsafe_allow_html=True)
     search_clicked = st.button("🚀 Найти маршрут", use_container_width=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -148,7 +142,7 @@ if 'route' in st.session_state:
     start_city = st.session_state.get('start_city', 'Москва')
     end_city = st.session_state.get('end_city', 'Владивосток')
     
-    # ===== НАСТРОЙКИ ПУТЕШЕСТВИЯ (компактно) =====
+    # ===== НАСТРОЙКИ ПУТЕШЕСТВИЯ =====
     with st.expander("⚙️ Настройки путешествия", expanded=True):
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -232,12 +226,12 @@ if 'route' in st.session_state:
         with col1:
             st.markdown("#### ⛽ Топливо")
             fuel_data = pd.DataFrame({
-                "Показатель": ["Расход", "Всего литров", "С запасом", "Цена за литр", "Стоимость", "Стоимость с запасом"],"Значение": [
+                "Показатель": ["Расход", "Всего литров", "С запасом", "Цена за литр", "Стоимость", "Стоимость с запасом"],
+                "Значение": [
                     f"{fuel_consumption} л/100км",
                     f"{total_liters:.1f} л",
                     f"{total_liters_with_reserve:.1f} л",
-                    f"{fuel_price} ₽/л",
-                    f"{total_cost:,.0f} ₽",
+                    f"{fuel_price} ₽/л",f"{total_cost:,.0f} ₽",
                     f"{total_cost_with_reserve:,.0f} ₽"
                 ]
             })
@@ -287,7 +281,6 @@ if 'route' in st.session_state:
             with st.form(key="checklist_form"):
                 for cat, items in categories.items():
                     with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
-                        # Разбиваем на 2 колонки для компактности
                         cols = st.columns(2)
                         for i, item in enumerate(items):
                             with cols[i % 2]:
@@ -302,7 +295,6 @@ if 'route' in st.session_state:
                 
                 st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
             
-            # Итоговый бюджет
             total_food = 0
             for cat, items in categories.items():
                 for item in items:
@@ -325,8 +317,9 @@ if 'route' in st.session_state:
         else:
             st.warning("Чек-лист пуст. Проверьте условия")
     
-    # ===== КНОПКА СБРОСА =====
-    if st.button("🔄 Новый маршрут", use_container_width=True):for key in ['route', 'distance', 'start_city', 'end_city']:
+    # ===== КНОПКА НОВОГО МАРШРУТА =====
+    if st.button("🔄 Новый маршрут", use_container_width=True):
+        for key in ['route', 'distance', 'start_city', 'end_city']:
             if key in st.session_state:
                 del st.session_state[key]
         st.rerun()

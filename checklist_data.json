@@ -514,15 +514,15 @@
 			],
 			"priority": "critical",
 			"calculation": {
-				"per_person_per_day": 0.14,
+				"packets_per_person_per_day": 1,
 				"days": 14
 			},
-			"note": "✅ Залить кипятком в пакете, подождать 20 мин — готово!"
+			"note": "✅ Залить кипятком в пакете, подождать 7 мин"
 		},
 		{
 			"id": "rice",
 			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
-			"name": "РИС (крупа)",
+			"name": "РИС (в пакетах для варки)",
 			"conditions": [
 				{
 					"type": "distance",
@@ -532,9 +532,27 @@
 			],
 			"priority": "critical",
 			"calculation": {
-				"per_person_per_day": 0.14,
+				"packets_per_person_per_day": 1,
 				"days": 14
-			}
+			},
+			"note": "✅ Залить кипятком в пакете, подождать 7 мин"
+		},
+		{
+			"id": "oatmeal",
+			"category": "🍜 ПРОДУКТЫ (рацион на 14 дней)",
+			"name": "ОВСЯНКА (быстрого приготовления, в пакетах)",
+			"conditions": [
+				{
+					"type": "camping",
+					"value": true
+				}
+			],
+			"priority": "medium",
+			"calculation": {
+				"packets_per_person_per_day": 1,
+				"days": 14
+			},
+			"note": "✅ Залить кипятком, подождать 3-5 мин"
 		},
 		{
 			"id": "canned_meat",

@@ -587,9 +587,9 @@
 				"type": "cans",
 				"cans_per_person_per_day": 1,
 				"days": 14,
-				"price_per_can": 120
+				"price_per_can": 250
 			},
-			"note": "💰 120 руб/банка"
+			"note": "💰 250 руб/банка"
 		},
 		{
 			"id": "canned_fish",
@@ -606,9 +606,9 @@
 				"type": "cans",
 				"cans_per_person_per_day": 0.5,
 				"days": 14,
-				"price_per_can": 90
+				"price_per_can": 230
 			},
-			"note": "💰 90 руб/банка"
+			"note": "💰 230 руб/банка"
 		},
 		{
 			"id": "tea_bags",

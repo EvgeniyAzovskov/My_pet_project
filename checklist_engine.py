@@ -7,7 +7,6 @@ def load_checklist_data():
 def check_condition(item, user_input):
     conditions = item.get('conditions', [])
     
-    # Если условий нет — вещь всегда нужна
     if not conditions:
         return True
     
@@ -45,17 +44,26 @@ def calculate_amount(item, people_count, days=14):
     if not calc:
         return None
     
-    if 'per_person_per_day' in calc:
-        # Крупы: граммы на человека в день
+    # Новый тип: расчет в пакетах с распределением
+    if calc.get('type') == 'packets':
+        # Сколько всего пакетов можно съесть за поездку (максимум 2 в день на человека)
+        total_packets_allowed = people_count * days * 2
+        
+        # Считаем, сколько всего видов круп выбрано
+        # Для этого нам нужно знать, сколько пунктов с типом "packets" в чек-листе
+        # Мы передадим это через глобальную переменную или пересчитаем позже
+        
+        # Пока возвращаем "рассчитается позже"
+        return {"type": "packets", "people": people_count, "days": days}
+    
+    elif 'per_person_per_day' in calc:
+        # Старый расчет для других продуктов
         total_kg = calc['per_person_per_day'] * people_count * days
-        # Округляем вверх до 0.5 кг
         return f"{round(total_kg * 2) / 2:.1f} кг"
     
     elif 'cans_per_day_for_2' in calc:
-        # Тушенка: из расчета на 2 человек
         cans_per_day = calc['cans_per_day_for_2'] * (people_count / 2)
         total_cans = cans_per_day * days
-        # Округляем до целых банок вверх
         import math
         return f"{math.ceil(total_cans)} банок"
     
@@ -67,15 +75,31 @@ def generate_checklist(user_input):
     people = user_input.get('people', 2)
     days = user_input.get('days', 14)
     
+    # Сначала соберем все элементы, чтобы посчитать количество круп
+    temp_result = []
+    packet_items = []
+    
     for item in all_items:
         if check_condition(item, user_input):
+            temp_result.append(item)
+            if item.get('calculation', {}).get('type') == 'packets':
+                packet_items.append(item)
+    
+    # Теперь рассчитаем количества
+    for item in temp_result:
+        calc = item.get('calculation')
+        if calc and calc.get('type') == 'packets':
+            # Передаем количество видов круп
+            amount = calculate_amount(item, people, days, len(packet_items))
+        else:
             amount = calculate_amount(item, people, days)
-            result.append({
-                "name": item['name'],
-                "category": item['category'],
-                "priority": item.get('priority', 'medium'),
-                "amount": amount,
-                "note": item.get('note', '')
-            })
+        
+        result.append({
+            "name": item['name'],
+            "category": item['category'],
+            "priority": item.get('priority', 'medium'),
+            "amount": amount,
+            "note": item.get('note', '')
+        })
     
     return result

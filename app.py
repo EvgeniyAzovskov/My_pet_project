@@ -2,8 +2,7 @@ import streamlit as st
 from route_calculator import get_route_info
 from map_generator import generate_route_map
 from streamlit_folium import folium_static
-from checklist_engine import generate_checklist
-import re
+from destinations_data import get_all_destinations, get_destination, get_campings
 import pandas as pd
 
 st.set_page_config(
@@ -18,7 +17,7 @@ st.set_page_config(
 st.markdown("""
 <style>
     .main-title {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 700;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
@@ -29,55 +28,72 @@ st.markdown("""
     .sub-title {
         text-align: center;
         color: #666;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         margin-bottom: 2rem;
     }
-    .stTextInput > div > div {
-        border-top: none !important;
-    }
-    .stTextInput > div:before {
-        display: none !important;
-    }
-    .stBalloon {
-        display: none !important;
-    }
-    .stTextInput > div {
-        border: 1px solid #ddd !important;
-        border-radius: 8px !important;
-    }
-    .stTextInput > div:focus-within {
-        border-color: #667eea !important;
-    }
-    .search-box {
+    .destination-card {
         background: white;
-        padding: 2rem;
         border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e8ecf0;
-        margin-bottom: 2rem;
-    }
-    .metric-card {
-        background: white;
         padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        border: 1px solid #f0f0f0;
-        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 1px solid #e8ecf0;
         transition: all 0.3s;
+        height: 100%;
     }
-    .metric-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    .destination-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
     }
-    .metric-card .value {
-        font-size: 2rem;
+    .destination-card .name {
+        font-size: 1.4rem;
         font-weight: 700;
         color: #1a1a2e;
     }
-    .metric-card .label {
+    .destination-card .description {
+        color: #666;
         font-size: 0.9rem;
+        margin: 0.5rem 0;
+    }
+    .destination-card .stats {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
         color: #888;
+    }
+    .camping-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1rem;
+        border-left: 4px solid #4caf50;
+        margin: 0.5rem 0;
+        transition: all 0.3s;
+    }
+    .camping-card:hover {
+        background: #f0f4ff;
+    }
+    .camping-card .name {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    .camping-card .price {
+        color: #667eea;
+        font-weight: 700;
+    }
+    .camping-card .features {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
         margin-top: 0.3rem;
+    }
+    .camping-card .feature {
+        background: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        color: #666;
+        border: 1px solid #ddd;
     }
     .section-title {
         font-size: 1.5rem;
@@ -109,19 +125,12 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
-    .food-info {
-        background: #f0f4ff;
-        padding: 1rem;
-        border-radius: 8px;
+    .budget-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
         border-left: 4px solid #667eea;
-        margin: 0.5rem 0;
-    }
-    .camping-info {
-        background: #e8f5e9;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid #4caf50;
-        margin: 0.5rem 0;
+        margin: 1rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -130,381 +139,210 @@ st.markdown("""
 # ШАПКА
 # ============================================
 st.markdown('<div class="main-title">🚗 TripPlanner</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">📋 Планируйте путешествия с умом — маршрут, топливо, снаряжение, питание</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">📋 Выберите направление, кемпинг и рассчитайте бюджет</div>', unsafe_allow_html=True)
 
 # ============================================
-# БЛОК ПОИСКА МАРШРУТА
+# СБРОС СОСТОЯНИЯ
 # ============================================
-st.markdown('<div class="search-box">', unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns([2, 2, 1])
-with col1:
-    start_city = st.text_input("📍 Откуда", value="Москва", placeholder="Город старта", label_visibility="collapsed")
-with col2:
-    end_city = st.text_input("🏁 Куда", value="Владивосток", placeholder="Город финиша", label_visibility="collapsed")
-with col3:
-    st.markdown("<br>", unsafe_allow_html=True)
-    search_clicked = st.button("🚀 Найти маршрут", use_container_width=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
+if 'reset_clicked' in st.session_state and st.session_state.reset_clicked:
+    for key in ['selected_dest', 'selected_camping', 'route_data', 'budget_calculated']:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.session_state.reset_clicked = False
+    st.rerun()
 
 # ============================================
-# РАСЧЕТ МАРШРУТА
+# ШАГ 1: ВЫБОР НАПРАВЛЕНИЯ
 # ============================================
-if search_clicked:
-    with st.spinner("🔄 Ищем города и строим маршрут..."):
-        route = get_route_info(start_city, end_city)
-        if route:
-            st.session_state['route'] = route
-            st.session_state['distance'] = route['distance_km']
-            st.session_state['start_city'] = start_city
-            st.session_state['end_city'] = end_city
-            st.session_state['route_calculated'] = True
-            st.success(f"✅ Маршрут построен! {route['distance_km']:,} км")
+if 'selected_dest' not in st.session_state:
+    st.markdown('<div class="section-title">🌍 Выберите направление</div>', unsafe_allow_html=True)
+    
+    destinations = get_all_destinations()
+    cols = st.columns(3)
+    
+    for idx, (key, dest) in enumerate(destinations.items()):
+        with cols[idx % 3]:
+            st.markdown(f"""
+            <div class="destination-card">
+                <div class="name">{dest['name']}</div>
+                <div class="description">{dest['description']}</div>
+                <div class="stats">
+                    <span>📏 {dest['distance_from_msk']} км от Москвы</span>
+                    <span>📅 {dest['recommended_days']} дней</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if st.button(f"📌 Выбрать", key=f"select_{key}", use_container_width=True):
+                st.session_state.selected_dest = key
+                st.rerun()
+
+# ============================================
+# ШАГ 2: ВЫБОР КЕМПИНГА
+# ============================================
+if 'selected_dest' in st.session_state and 'selected_camping' not in st.session_state:
+    dest_key = st.session_state.selected_dest
+    dest = get_destination(dest_key)
+    
+    if dest:
+        st.markdown(f'<div class="section-title">🏕️ Кемпинги в {dest["name"]}</div>', unsafe_allow_html=True)
+        
+        if st.button("⬅️ Выбрать другое направление", use_container_width=True):
+            for key in ['selected_dest', 'selected_camping', 'route_data', 'budget_calculated']:
+                if key in st.session_state:
+                    del st.session_state[key]
             st.rerun()
-        else:
-            st.error("❌ Город не найден! Проверьте название")
+        
+        campings = get_campings(dest_key)
+        
+        for camping in campings:
+            features_html = " ".join([f'<span class="feature">✅ {f}</span>' for f in camping['features']])
+            st.markdown(f"""
+            <div class="camping-card">
+                <div class="name">{camping['name']}</div>
+                <div class="price">💰 {camping['price_per_night']} ₽/ночь</div>
+                <div class="description">{camping['description']}</div>
+                <div class="features">{features_html}</div>
+                <div>⭐ {camping['rating']}/5.0</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if st.button(f"🏕️ Выбрать", key=f"camping_{camping['name']}", use_container_width=True):
+                st.session_state.selected_camping = camping
+                st.session_state.camping_price = camping['price_per_night']
+                st.rerun()
 
 # ============================================
-# ЕСЛИ МАРШРУТ ПОСТРОЕН
+# ШАГ 3: РАСЧЕТ БЮДЖЕТА
 # ============================================
-if 'route' in st.session_state and st.session_state.get('route_calculated', False):
-    route = st.session_state['route']
-    distance = st.session_state['distance']
-    start_city = st.session_state.get('start_city', 'Москва')
-    end_city = st.session_state.get('end_city', 'Владивосток')
+if 'selected_camping' in st.session_state:
+    dest_key = st.session_state.selected_dest
+    dest = get_destination(dest_key)
+    camping = st.session_state.selected_camping
     
-    # ============================================
-    # НАСТРОЙКИ ПУТЕШЕСТВИЯ
-    # ============================================
-    st.markdown('<div class="section-title">⚙️ Настройки путешествия</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">📊 Расчет бюджета для {dest["name"]}</div>', unsafe_allow_html=True)
     
-    col1, col2, col3, col4 = st.columns(4)
+    # ===== НАСТРОЙКИ =====
+    col1, col2 = st.columns(2)
     with col1:
-        people = st.number_input("👥 Человек", min_value=1, max_value=10, value=2, step=1)
+        start_city = st.text_input("📍 Город старта", value="Москва")
     with col2:
-        days = st.number_input("📅 Дней", min_value=1, max_value=90, value=14, step=1)
-    with col3:
-        season = st.selectbox("🌤️ Сезон", ["summer", "winter", "autumn", "spring"])
-    with col4:
-        camping = st.checkbox("🏕️ Палатка", value=True)
+        days = st.number_input("📅 Количество дней", min_value=1, max_value=30, value=dest['recommended_days'], step=1)
     
-
-    # ===== ОБРАТНЫЙ МАРШРУТ =====
-    st.markdown("---")
-    col1, col2, col3 = st.columns([1, 1, 2])
-    with col1:
-        round_trip = st.checkbox("🔄 Обратный маршрут", value=False, help="Добавить обратную дорогу (туда и обратно)")
+    # Расчет маршрута
+    route_data = None
+    if st.button("🚀 Рассчитать маршрут", type="primary", use_container_width=True):
+        with st.spinner("🔄 Ищем маршрут..."):
+            route_data = get_route_info(start_city, dest['name'])
+            if route_data:
+                st.session_state.route_data = route_data
+                st.session_state.distance = route_data['distance_km']
+                st.success(f"✅ Расстояние: {route_data['distance_km']:,} км")
+            else:
+                st.session_state.distance = dest['distance_from_msk']
+                st.warning(f"⚠️ Используем примерное расстояние: {dest['distance_from_msk']:,} км")
+    
+    # Используем сохраненное расстояние
+    if 'distance' in st.session_state:
+        distance = st.session_state.distance
+    else:
+        distance = dest['distance_from_msk']
+    
+    # ===== ОБРАТНЫЙ ПУТЬ =====
+    round_trip = st.checkbox("🔄 Обратный маршрут (туда и обратно)", value=True)
+    total_distance = distance * 2 if round_trip else distance
     
     if round_trip:
-        st.info(f"🔄 Маршрут туда и обратно: {distance * 2:,} км (×2)")
-        total_distance = distance * 2
-    else:
-        total_distance = distance
-    
-    # ===== ПРОЖИВАНИЕ В КЕМПИНГЕ =====
-    st.markdown("---")
-    st.markdown("### 🏕️ Проживание в кемпинге")
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        camping_price_per_night = st.number_input(
-            "💰 Цена за ночь (₽)",
-            min_value=0,
-            max_value=5000,
-            value=500,
-            step=50,
-            help="Стоимость одной ночи в кемпинге на человека"
-        )
-    with col2:
-        camping_nights = st.number_input(
-            "🌙 Ночей в кемпинге",
-            min_value=0,
-            max_value=days,
-            value=min(days, 14),
-            step=1,
-            help="Сколько ночей планируете в кемпинге"
-        )
-    with col3:
-        if camping and camping_nights > 0:
-            total_camping_cost = people * camping_nights * camping_price_per_night
-            st.metric(
-                "🏕️ Итого кемпинг",
-                f"{total_camping_cost:,.0f} ₽",
-                help=f"{people} чел. × {camping_nights} ночей × {camping_price_per_night} ₽"
-            )
-        else:
-            total_camping_cost = 0
-            st.info("🏨 Проживание в кемпинге не выбрано")
-    
-    # Предупреждение если ночей больше чем дней
-    if camping_nights > days:
-        st.warning(f"⚠️ Ночей в кемпинге ({camping_nights}) не может быть больше дней в пути ({days})")
+        st.info(f"📏 Общее расстояние: {total_distance:,} км (включая обратную дорогу)")
     
     # ===== ТОПЛИВО =====
     st.markdown("---")
+    st.markdown("### ⛽ Топливо")
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        fuel_consumption = st.number_input(
-            "⛽ Расход (л/100км)",
-            min_value=1.0,
-            max_value=30.0,
-            value=10.0,
-            step=0.5
-        )
+        fuel_consumption = st.number_input("Расход (л/100км)", min_value=5.0, max_value=20.0, value=10.0, step=0.5)
     with col2:
-        fuel_price = st.number_input("💰 Цена за литр (₽)",
-            min_value=10,
-            max_value=150,
-            value=66,
-            step=1,
-            help="Цена 95-го бензина"
-        )
+        fuel_price = st.number_input("Цена за литр (₽)", min_value=40, max_value=100, value=66, step=1)
     with col3:
-        tank_volume = st.number_input(
-            "🛢️ Бак (л)",
-            min_value=20,
-            max_value=200,
-            value=60,
-            step=5
-        )
-    with col4:
-        reserve_percent = st.slider(
-            "Запас (%)",
-            min_value=5,
-            max_value=30,
-            value=10,
-            step=5
-        )
+        tank_volume = st.number_input("Объем бака (л)", min_value=30, max_value=150, value=60, step=5)
     
-    # ============================================
-    # КНОПКА "РАССЧИТАТЬ БЮДЖЕТ"
-    # ============================================
+    # ===== КЕМПИНГ =====
     st.markdown("---")
-    if st.button("📊 Рассчитать бюджет путешествия", use_container_width=True, type="primary"):
-        st.session_state['budget_calculated'] = True
-        st.rerun()
+    st.markdown("### 🏕️ Проживание")
     
-    # ============================================
-    # РАСЧЕТЫ (только если нажата кнопка)
-    # ============================================
+    col1, col2 = st.columns(2)
+    with col1:
+        camping_price = st.number_input("Цена кемпинга (₽/ночь)", min_value=0, max_value=5000, value=camping['price_per_night'], step=50)
+    with col2:
+        camping_nights = st.number_input("Ночей в кемпинге", min_value=0, max_value=days, value=days, step=1)
+    
+    total_camping_cost = camping_price * camping_nights
+    
+    # ===== РАСЧЕТ БЮДЖЕТА =====
+    st.markdown("---")
+    
+    if st.button("💰 Рассчитать бюджет", type="primary", use_container_width=True):
+        st.session_state.budget_calculated = True
+    
     if st.session_state.get('budget_calculated', False):
-        
-        # ===== РАСЧЕТ ТОПЛИВА =====
+        # Расчет топлива
         total_liters = (total_distance / 100) * fuel_consumption
         total_cost = total_liters * fuel_price
-        reserve_factor = 1 + (reserve_percent / 100)
-        total_liters_with_reserve = total_liters * reserve_factor
-        total_cost_with_reserve = total_cost * reserve_factor
-        effective_range = (tank_volume / fuel_consumption) * 100
-        refuels_count = int(total_distance / effective_range) + 1
         
-        # ===== РАСЧЕТ ПИТАНИЯ =====
-        food_rates = {
-            "wild": {"breakfast": 100, "lunch": 150, "dinner": 150, "snacks": 80},
-            "standard": {"breakfast": 200, "lunch": 300, "dinner": 350, "snacks": 150},
-            "luxury": {"breakfast": 400, "lunch": 600, "dinner": 700, "snacks": 300}
-        }
+        # Количество заправок
+        refuels_count = int(total_distance / ((tank_volume / fuel_consumption) * 100)) + 1
         
-        template = "wild" if camping else "standard"
-        rates = food_rates.get(template, food_rates["standard"])
+        # Итог
+        grand_total = total_cost + total_camping_cost
         
-        food_per_day_per_person = sum(rates.values())
-        total_food_cost = food_per_day_per_person * people * days
-        
-        food_details = {
-            "Завтрак": rates["breakfast"] * people * days,
-            "Обед": rates["lunch"] * people * days,
-            "Ужин": rates["dinner"] * people * days,
-            "Перекусы": rates["snacks"] * people * days
-        }
-        
-        # ============================================
-        # ОБЗОР ПОЕЗДКИ
-        # ============================================
-        st.markdown('<div class="section-title">📊 Обзор поездки</div>', unsafe_allow_html=True)
+        st.markdown("---")
+        st.markdown("## 💰 Итоговый бюджет")
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="value">{total_distance:,}</div>
-                <div class="label">📏 Расстояние (км)</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.metric("⛽ Топливо", f"{total_cost:,.0f} ₽")
+            st.caption(f"{total_liters:.1f} л × {fuel_price} ₽")
         with col2:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="value">{days}</div>
-                <div class="label">📅 Дней в пути</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.metric("🏕️ Кемпинг", f"{total_camping_cost:,.0f} ₽")
+            st.caption(f"{camping_nights} ночей × {camping_price} ₽")
         with col3:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="value">{refuels_count}</div>
-                <div class="label">⛽ Заправок</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.metric("⛽ Заправок", f"{refuels_count} раз")
+            st.caption(f"~{(tank_volume / fuel_consumption) * 100:.0f} км на баке")
         with col4:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="value">{total_cost_with_reserve:,.0f} ₽</div>
-                <div class="label">💰 Стоимость топлива</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.metric("💰 ИТОГО", f"{grand_total:,.0f} ₽", delta=f"~{grand_total/days:.0f} ₽/день")
         
-        # ============================================
-        # КАРТА
-        # ============================================
-        st.markdown('<div class="section-title">🗺️ Карта маршрута</div>', unsafe_allow_html=True)
+        # Детализация
+        with st.expander("📋 Детализация бюджета", expanded=True):
+            st.markdown("""
+            | Статья | Сумма |
+            |--------|-------|
+            | Топливо | {:.0f} ₽ |
+            | Кемпинг | {:.0f} ₽ |
+            | ИТОГО | {:.0f} ₽ |
+            """.format(total_cost, total_camping_cost, grand_total))
         
-        try:
-            folium_map = generate_route_map(route)
-            folium_static(folium_map, width=1200, height=500)
-            
-            if route.get('has_route'):
-                st.caption("✅ Реальный маршрут по дорогам · ⛽ АЗС · 🏕️ Кемпинги")
-            else:
-                st.warning("⚠️ Реальный маршрут не доступен, показана прямая линия")
-        except Exception as e:
-            st.error(f"Ошибка загрузки карты: {e}")
-        
-        # ============================================
-        # РАСХОДЫ НА ПИТАНИЕ
-        # ============================================
-        st.markdown('<div class="section-title">🍽️ Расходы на питание</div>', unsafe_allow_html=True)
-        
-        st.markdown(f"""
-        <div class="food-info">
-            <b>📌 Как считаем:</b><br>
-            • {people} чел. × {days} дней = {people * days} человеко-дней<br>
-            • Норма: {food_per_day_per_person:.0f} ₽/чел/день<br>
-            • Тип питания: {"🏕️ Походный" if camping else "🏨 Стандартный"}
-        </div>
-        """, unsafe_allow_html=True)
-        
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric("🍳 Завтрак", f"{food_details['Завтрак']:,.0f} ₽")
-        with col2:
-            st.metric("🍝 Обед", f"{food_details['Обед']:,.0f} ₽")
-        with col3:
-            st.metric("🍲 Ужин", f"{food_details['Ужин']:,.0f} ₽")
-        with col4:
-            st.metric("🥜 Перекусы", f"{food_details['Перекусы']:,.0f} ₽")
-        
-        st.info(f"💰 Итого на питание: {total_food_cost:,.0f} ₽")
-        
-        # ============================================
-        # ПРОЖИВАНИЕ (детализация)
-        # ============================================
-        if total_camping_cost > 0:
+        # Карта
+        if 'route_data' in st.session_state and st.session_state.route_data:
             st.markdown("---")
-            st.markdown("### 🏕️ Детализация проживания")
-            st.info(f"""
-            🏕️ Кемпинг:  
-            • {people} чел. × {camping_nights} ночей × {camping_price_per_night} ₽ = {total_camping_cost:,.0f} ₽
-            """)
-        
-        # ============================================
-        # ЧЕК-ЛИСТ
-        # ============================================
-        st.markdown('<div class="section-title">🎒 Чек-лист снаряжения</div>', unsafe_allow_html=True)
-        
-        if st.button("🔄 Собрать чек-лист", use_container_width=True):
-            user_input = {
-                "season": season,
-                "template": "wild" if camping else "standard",
-                "camping": camping,
-                "people": people,
-                "days": days,
-                "distance": total_distance
-            }
+            st.markdown("### 🗺️ Карта маршрута")
             
-            checklist = generate_checklist(user_input)
-            
-            if checklist:
-                st.success(f"✅ Готово! {len(checklist)} позиций")
+            try:
+                route_data = st.session_state.route_data
+                folium_map = generate_route_map(route_data)
+                folium_static(folium_map, width=1200, height=500)
                 
-                categories = {}
-                for item in checklist:
-                    cat = item['category']
-                    if cat not in categories:
-                        categories[cat] = []
-                    categories[cat].append(item)
-                
-                with st.form(key="checklist_form"):
-                    for cat, items in categories.items():
-                        with st.expander(f"📌 {cat} ({len(items)})", expanded=True):
-                            cols = st.columns(2)
-                            for i, item in enumerate(items):
-                                with cols[i % 2]:
-                                    label = item['name']
-                                    if item.get('amount'):
-                                        label += f" → **{item['amount']}**"
-                                    if item.get('price'):
-                                        label += f" (💰 {item['price']})"
-                                    if item.get('note'):
-                                        label += f" *({item['note']})*"
-                                    st.checkbox(label, key=f"{item['name']}_{hash(label)}")
-                    
-                    st.form_submit_button("📋 Сохранить состояние", use_container_width=True)
-                    # Подсчет стоимости снаряжения
-                total_gear_cost = 0
-                for cat, items in categories.items():
-                    for item in items:
-                        if item.get('price'):
-                            price_match = re.search(r'(\d+)', item['price'])
-                            if price_match:
-                                total_gear_cost += int(price_match.group(1))
-                
-                # ============================================
-                # ИТОГОВЫЙ БЮДЖЕТ (ПОСЛЕ ЧЕК-ЛИСТА)
-                # ============================================
-                st.markdown("---")
-                st.markdown('<div class="section-title">💰 Итоговый бюджет путешествия</div>', unsafe_allow_html=True)
-                
-                grand_total = total_cost_with_reserve + total_food_cost + total_camping_cost + total_gear_cost
-                
-                col1, col2, col3, col4, col5 = st.columns(5)
-                with col1:
-                    st.metric("⛽ Топливо", f"{total_cost_with_reserve:,.0f} ₽")
-                with col2:
-                    st.metric("🍽️ Питание", f"{total_food_cost:,.0f} ₽")
-                with col3:
-                    st.metric("🏕️ Кемпинг", f"{total_camping_cost:,.0f} ₽")
-                with col4:
-                    st.metric("🎒 Снаряжение", f"{total_gear_cost:,.0f} ₽")
-                with col5:
-                    st.metric("💰 ИТОГО", f"{grand_total:,.0f} ₽", delta=f"~{grand_total/days:,.0f} ₽/день")
-                
-                # Детализация бюджета
-                with st.expander("📋 Детализация бюджета", expanded=False):
-                    budget_data = pd.DataFrame({
-                        "Категория": ["Топливо", "Питание", "Кемпинг", "Снаряжение", "ИТОГО"],
-                        "Сумма (₽)": [
-                            total_cost_with_reserve,
-                            total_food_cost,
-                            total_camping_cost,
-                            total_gear_cost,
-                            grand_total
-                        ]
-                    })
-                    st.dataframe(budget_data, hide_index=True, use_container_width=True)
-                
-                st.caption("📌 Снаряжение рассчитано из чек-листа. Цены примерные.")
-            else:
-                st.warning("Чек-лист пуст. Проверьте условия")
+                if route_data.get('has_route'):
+                    st.caption("✅ Реальный маршрут по дорогам")
+                else:
+                    st.caption("⚠️ Приблизительный маршрут")
+            except Exception as e:
+                st.warning("Карта временно недоступна")
     
-    # ============================================
-    # КНОПКА НОВОГО МАРШРУТА
-    # ============================================
-    if st.button("🔄 Новый маршрут", use_container_width=True):
-        for key in ['route', 'distance', 'start_city', 'end_city', 'route_calculated', 'budget_calculated']:
-            if key in st.session_state:
-                del st.session_state[key]
+    # ===== КНОПКА СБРОСА =====
+    st.markdown("---")
+    if st.button("🔄 Начать заново", use_container_width=True):
+        st.session_state.reset_clicked = True
         st.rerun()
 
 # ============================================
